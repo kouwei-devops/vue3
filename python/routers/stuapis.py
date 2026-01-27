@@ -54,17 +54,19 @@ async def delete_student(student_id: int):  # 从URL路径获取
     return {"message": "Student deleted successfully"} 
 
 @router.get("/selectPage")
-async def select_page_student(name: str = '',page: int = 1, page_size: int = 10):
-    offset = (page - 1) * page_size
+async def select_page_student(name: str = '',pagenum: int = 1, pagesize: int = 10):
+    offset = (pagenum - 1) * pagesize
     total = await Student.filter(name__contains=name).count()
-    total_pages = (total + page_size - 1) // page_size
-    students = await Student.filter(name__contains=name).offset(offset).limit(page_size).order_by('-id')
+    json1 = json.dumps(total, ensure_ascii=False)
+    print("总记录数：", json1)
+    total_pages = (total + pagesize - 1) // pagesize
+    students = await Student.filter(name__contains=name).offset(offset).limit(pagesize).order_by('-id')
 
     return {
             "students": students,
             "total": total,  # ✅ 返回总记录数
-            "page": page,
-            "pagesize": page_size,
+            "page": pagenum,
+            "pagesize": pagesize,
         }
 ## 导出router
 __all__ = ["router"]

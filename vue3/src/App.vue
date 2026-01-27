@@ -24,8 +24,12 @@
         </template>
       </el-table-column>
     </el-table>
-    <div style="margin: 10px;marg">
-      <el-pagination background layout="prev, pager, next, total" :total="4" v-model:page-size="pageSize"/>
+    <div style="margin: 10px;">
+      <el-pagination background layout="total, sizes, prev, pager, next, jumper"
+      :disabled="disabled"
+      :total="total" v-model:page-size="pageSize"  v-model:current-page="pageNum" @current-change="load"
+      @size-change="handleSizeChange"
+      />
     </div>
   </div>
 </template>
@@ -33,33 +37,45 @@
 <style scoped></style>
 <script lang="ts" setup>
 import axios from 'axios'
-import { pa } from 'element-plus/es/locale'
+import { pa, ta } from 'element-plus/es/locale'
 import { ref } from 'vue'
-  import { reactive } from 'vue'
+import type { ComponentSize } from 'element-plus'
+import { reactive } from 'vue'
   const date = reactive({
     name: null
   })
-  const pageSize = ref(1)
-  const pageNum = ref(1)
-  const tableData = ref([])
-  const handleEdit = (row) =>{
-    console.log(row)
-  }
-  const remove = (id) =>{
+const handleSizeChange = (val: number) => {
+  pageSize.value = val
+  pageNum.value = 1
+  load()
+}
+const name = ref('')
+const pageSize = ref(10)         // 当前页大小
+const pageNum = ref(1)          // 当前页码
+const tableData = ref([])       // 表格数据
+const total = ref(0)            // 总条数
+const handleEdit = (row) =>{
+  console.log(row)
+}
+const remove = (id) =>{
 
-  }
-  const ip = '127.0.0.1:8000'
-  const load = () => {
-    axios.get('http://' + ip + '/api/selectAll',{
-      params:{
-        pageNum: pageNum,
-        pageSize: pageSize,
-
-      }
-    }).then(res => {
-      console.log(res)
-    })
-  }
+}
+const ip = '127.0.0.1:8000'
+const load = () => {
+  axios.get('http://' + ip + '/api/selectPage',{
+    params: {
+      name: name.value,
+      pagenum: pageNum.value,
+      pagesize: pageSize.value,
+    }
+  }).then(res => {
+    console.log(res.data)
+    tableData.value = res.data.students
+    total.value = res.data.total
+    pageSize.value = res.data.pagesize
+    pageNum.value = res.data.page
+  })
+}
 load() //
 </script>
 
