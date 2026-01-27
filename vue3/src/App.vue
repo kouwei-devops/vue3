@@ -5,10 +5,10 @@
     <div>
       <el-button type="primary" style="margin:30px auto; text-align: center; ">数据展示</el-button>
     </div style="margin-bottom: 30px;">
-    <el-input type="primary" style="width: 300px;" placeholder="姓名" v-model="date.name"></el-input>
-    <el-button type="primary" @click="handleSearch" style="margin-right: 10px;margin-left: 10px;" >查询</el-button>
+    <el-input type="primary" style="width: 300px;" placeholder="姓名" v-model="name"></el-input>
+    <el-button type="primary" @click="load" style="margin-right: 10px;margin-left: 10px;" >查询</el-button>
     <el-table border stripe :data="tableData" style="width: 100%">
-      <el-table-column prop="date" label="Date" width="180" />
+      <el-table-column prop="id" label="Date" width="180" />
       <el-table-column prop="name" label="Name" width="180" />
       <el-table-column prop="address" label="Address" />
       <el-table-column fixed="right" label="Operations" min-width="120">
