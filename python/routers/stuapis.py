@@ -53,6 +53,29 @@ async def delete_student(student_id: int):  # 从URL路径获取
     await Student.filter(id=student_id).delete()
     return {"message": "Student deleted successfully"} 
 
+@router.put("/resave")
+async def save_student(student_model: StudentModel):
+    stu_dic = student_model.model_dump(exclude_none=True)
+    student_id = stu_dic.get("id")
+
+    if not student_id:
+        return {"error": "id is required"}
+
+    student = await Student.get_or_none(id=student_id)
+
+    if student is None:
+        # 不存在 → 新增
+        await Student.create(**stu_dic)
+        return {"action": "insert", "message": "Student added successfully"}
+    else:
+        # 已存在 → 更新
+        update_data = stu_dic.copy()
+        update_data.pop("id", None)
+        await Student.filter(id=student_id).update(**update_data)
+        return {"action": "update", "message": "Student updated successfully"}
+
+
+
 @router.get("/selectPage")
 async def select_page_student(name: str = '',pagenum: int = 1, pagesize: int = 10):
     offset = (pagenum - 1) * pagesize
