@@ -21,8 +21,8 @@ async def select_all_student(name:str=''):
 #     pip install aiomysql
 @router.post("/add")
 async def add_student(student_model: StudentModel):
-    stu_name = await Student.get_or_none(name=student_model.name)
-    if stu_name is None:
+    stu_id = await Student.get_or_none(id=student_model.id)
+    if stu_id is None:
         stu_dic = student_model.model_dump(exclude_none=True)
         stu_json = json.dumps(stu_dic, ensure_ascii=False)  # 中文不转义
         print("JSON格式：", stu_json)
@@ -44,7 +44,7 @@ async def update_student(student_model: StudentModel):      ##从前端获取数
     resp = await Student.filter(id=student_id).update(**update_data)  ##  Tortoise ORM 操作数据库
     return {"message": "Student updated successfully"}
 
-@router.delete("/{student_id}")
+@router.delete("/delete/{student_id}")
 async def delete_student(student_id: int):  # 从URL路径获取
     student = await Student.get_or_none(id=student_id)
     if student is None:
