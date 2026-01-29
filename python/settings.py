@@ -14,7 +14,7 @@ TORTOISE_ORM_CONFIG = {
                 "user": "root",          # 用户名
                 "password": "1234",  # 密码
                 "database": "fastapi",# 数据库名
-                "charset": "utf8mb4",    # 字符集
+                "charset": "utf8mb4",    # 字符集.
             },
         }
     },
