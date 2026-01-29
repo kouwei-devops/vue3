@@ -208,14 +208,24 @@ const load = async () => {
 const parseSize = (size) => {
   if (!size) return 0
 
-  const value = parseFloat(size)
-  if (size.endsWith('T')) return value * 1024 ** 4
-  if (size.endsWith('G')) return value * 1024 ** 3
-  if (size.endsWith('M')) return value * 1024 ** 2
-  if (size.endsWith('K') || size.endsWith('k')) return value * 1024
-  if (size === '0k') return 0
+  const s = size.toString().trim()
+  const value = parseFloat(s)
+  if (isNaN(value)) return 0
 
-  return Number(size) || 0
+  const unit = s.slice(-1).toUpperCase()
+
+  switch (unit) {
+    case 'T':
+      return value * 1024 ** 4
+    case 'G':
+      return value * 1024 ** 3
+    case 'M':
+      return value * 1024 ** 2
+    case 'K':
+      return value * 1024
+    default:
+      return value // 已经是字节
+  }
 }
 
 
