@@ -10,8 +10,10 @@
     <el-button type="primary" @click="handleadd" style="margin-right: 10px;margin-left: 10px;" >新增</el-button>
     <el-table border stripe :data="tableData" style="width: 100%">
       <el-table-column prop="id" label="id" width="180" />
-      <el-table-column prop="name" label="Name" width="180" />
-      <el-table-column prop="address" label="Address" />
+      <el-table-column prop="name" label="姓名" width="180" />
+      <el-table-column prop="address" label="家目录" />
+      <el-table-column prop="num" label="存储大小" />
+      <el-table-column prop="iphone" label="存储配额" />
       <el-table-column fixed="right" label="Operations" min-width="120">
         <template #default="scope">
 
@@ -103,9 +105,11 @@ const rules = reactive({
 })
 
 /* 查询条件：姓名 */
+
 const id = ref('')
 const name = ref('')
 const num = ref('')
+const iphone = ref()
 const formRef = ref()
 /* 分页相关变量 */
 const pageSize = ref(10)         // 每页条数
@@ -205,6 +209,7 @@ const load = async () => {
   total.value = res.data.total
   pageSize.value = res.data.pagesize
   pageNum.value = res.data.page
+  iphone.value = res.data.iphone
 }
 
 load()
