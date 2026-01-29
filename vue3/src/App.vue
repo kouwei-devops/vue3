@@ -19,7 +19,7 @@
             编辑
           </el-button>
           <el-button link type="primary" style="margin-right: 10px;"size="small" @click="remove(scope.row)"> 删除 </el-button>
-         
+
         </template>
       </el-table-column>
     </el-table>
@@ -117,7 +117,7 @@ const total = ref(0)             // 总记录数
 const handleEdit = (row) => {
   ruleform.form = JSON.parse(JSON.stringify(row))
   ruleform.dialogVisible = true
-  
+
 }
 
 /* 删除按钮点击事件（未实现） */
@@ -148,7 +148,7 @@ const remove = (row) => {
 }
 
 /* 后端服务地址 */
-const ip = '127.0.0.1:8000'
+const ip = '10.82.4.120:8000'
 
 /* 新增按钮：打开弹窗并清空表单 */
 const handleadd = () => {
@@ -161,7 +161,7 @@ const add = () => {
       ruleform.dialogVisible = false
       load()
   })
-} 
+}
 const update = () => {
   axios.put('http://' + ip + '/api/update',ruleform.form).then(res => {
     if (res.status == 200) {
