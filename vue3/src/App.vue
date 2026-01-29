@@ -9,7 +9,7 @@
     <el-button type="primary" @click="load" style="margin-right: 10px;margin-left: 10px;" >查询</el-button>
     <el-button type="primary" @click="handleadd" style="margin-right: 10px;margin-left: 10px;" >新增</el-button>
     <el-table border stripe :data="tableData" style="width: 100%">
-      <el-table-column prop="id" label="Date" width="180" />
+      <el-table-column prop="id" label="id" width="180" />
       <el-table-column prop="name" label="Name" width="180" />
       <el-table-column prop="address" label="Address" />
       <el-table-column fixed="right" label="Operations" min-width="120">
