@@ -12,8 +12,12 @@
       <el-table-column prop="id" label="id" width="180" sortable />
       <el-table-column prop="name" label="姓名" width="180" sortable />
       <el-table-column prop="address" label="家目录" />
-      <el-table-column prop="num" label="存储大小" sortable />
-      <el-table-column prop="iphone" label="存储配额" sortable />
+      <el-table-column prop="num" label="存储大小" sortable
+      :sort-method="(a, b) => parseSize(a.num) - parseSize(b.num)"
+      />
+      <el-table-column prop="iphone" label="存储配额" sortable
+      :sort-method="(a, b) => parseSize(a.iphone) - parseSize(b.iphone)"
+      />
       <el-table-column fixed="right" label="Operations" min-width="120">
         <template #default="scope">
 
@@ -201,6 +205,19 @@ const load = async () => {
       pagesize: pageSize.value,
     }
   })
+const parseSize = (size) => {
+  if (!size) return 0
+
+  const value = parseFloat(size)
+  if (size.endsWith('T')) return value * 1024 ** 4
+  if (size.endsWith('G')) return value * 1024 ** 3
+  if (size.endsWith('M')) return value * 1024 ** 2
+  if (size.endsWith('K') || size.endsWith('k')) return value * 1024
+  if (size === '0k') return 0
+
+  return Number(size) || 0
+}
+
 
   console.log(res.data)
   tableData.value = res.data.students
