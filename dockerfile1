@@ -3,7 +3,7 @@ FROM swr.cn-north-4.myhuaweicloud.com/ddn-k8s/docker.io/python:3.10.4-slim
 WORKDIR /app
 COPY python/ .
 RUN pip config set global.index-url https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple
-RUN pip install fastapi uvicorn tortoise-orm aiomysql
+RUN pip install fastapi uvicorn tortoise-orm aiomysql cryptography
 
 EXPOSE 8000
 
