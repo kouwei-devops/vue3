@@ -205,6 +205,16 @@ const load = async () => {
       pagesize: pageSize.value,
     }
   })
+  console.log(res.data)
+  tableData.value = res.data.students
+  id.value = res.data.id
+  num.value = res.data.num
+  total.value = res.data.total
+  pageSize.value = res.data.pagesize
+  pageNum.value = res.data.page
+  iphone.value = res.data.iphone
+}
+
 const parseSize = (size) => {
   if (!size) return 0
 
@@ -228,16 +238,6 @@ const parseSize = (size) => {
   }
 }
 
-
-  console.log(res.data)
-  tableData.value = res.data.students
-  id.value = res.data.id
-  num.value = res.data.num
-  total.value = res.data.total
-  pageSize.value = res.data.pagesize
-  pageNum.value = res.data.page
-  iphone.value = res.data.iphone
-}
 
 load()
 </script>
