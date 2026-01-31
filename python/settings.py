@@ -9,7 +9,7 @@ TORTOISE_ORM_CONFIG = {
             # MySQL配置（根据您的表结构推荐）
             "engine": "tortoise.backends.mysql",
             "credentials": {
-                "host": "10.82.4.120",      # 数据库主机
+                "host": "192.168.2.250",      # 数据库主机
                 "port": 3306,            # 数据库端口
                 "user": "root",          # 用户名
                 "password": "1234",  # 密码
