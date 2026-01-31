@@ -2,6 +2,7 @@
 
 # Lustre quota → JSON → upsert
 quota_output=$(lfs quota -uah | awk 'NR>2')
+CLUSTER_ID=8581
 
 while read -r line; do
     [[ -z "$line" ]] && continue
@@ -14,7 +15,6 @@ while read -r line; do
     user_or_id="${cols[1]}"   # quota_id 或用户名
     num="${cols[2]}"           # 第3列
     iphone="${cols[3]}"        # 第4列
-    files="${cols[6]}"         # files
 
     # 判断是数字还是用户名
     if [[ "$user_or_id" =~ ^[0-9]+$ ]]; then
@@ -38,8 +38,7 @@ while read -r line; do
         --arg address "$address" \
         --arg num "$num" \
         --arg iphone "$iphone" \
-        --arg files "$files" \
-        '{id:$id, name:$name, address:$address, num:$num, iphone:$iphone,}')
+        '{id:$id, name:$name, address:$address, num:$num, iphone:$iphone, cluster_id: $cluster_id}')
 
     # PUT 到接口
     response=$(curl -s -o /dev/null -w "%{http_code}" -X PUT \
