@@ -3,7 +3,7 @@ import json
 from fastapi import APIRouter
 from pydantic import BaseModel
 from models import Student
-
+import paramiko
 router = APIRouter(prefix="/api")
 
 class StudentModel(BaseModel):
@@ -91,5 +91,6 @@ async def select_page_student(name: str = '',pagenum: int = 1, pagesize: int = 1
             "page": pagenum,
             "pagesize": pagesize,
         }
+
 ## 导出router
 __all__ = ["router"]
