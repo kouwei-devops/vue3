@@ -12,7 +12,9 @@ class LustreQuotaQuery(BaseModel):
 def ssh_quota_query(host: str, user: str, home: str) -> str:
     cmd = [
         "ssh",
-        f"{host}",
+        "-i", "/app/ssh/id_rsa",          # 指定私钥
+        "-o", "StrictHostKeyChecking=no",# （可选）首次免确认
+        host,
         f"lfs quota -u {user} {home}"
     ]
 
