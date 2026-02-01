@@ -18,10 +18,14 @@ class LustreQuotaQuery(BaseModel):
 def ssh_quota_update(host: str, name: str, address: str ,iphone:str) -> str:
     cmd = [
         "ssh",
-        "-i", "/app/ssh/id_rsa",          # 指定私钥
-        "-o", "StrictHostKeyChecking=no",# （可选）首次免确认
+        "-i", "/app/ssh/id_rsa",
+        "-o", "StrictHostKeyChecking=no",
+        "-o", "BatchMode=yes",
+        "-o", "ConnectTimeout=5",
+        "-T",                      # ⭐ 不分配 TTY（关键）
         host,
-        f"lfs setquota -u {name} -b {iphone} -B {iphone} {address} && bash /root/app/vue3/lustre_one_user.sh {name} {address}  "
+        f"lfs setquota -u {name} -b {iphone} -B {iphone} {address} "
+        f"&& bash /root/app/vue3/lustre_one_user.sh {name} {address}"
     ]
 
     result = subprocess.run(
