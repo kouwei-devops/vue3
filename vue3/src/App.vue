@@ -75,8 +75,8 @@
                 <el-form-item prop="address" label="家目录">
           <el-input v-model="ruleform.form.address" autocompLete="off" placeholder="请输入地址"/>
         </el-form-item>
-                <el-form-item prop="num" label="配额大小">
-          <el-input v-model="ruleform.form.num" autocompLete="off" placeholder="请输入电话"/>
+                <el-form-item prop="iphone" label="配额大小">
+          <el-input v-model="ruleform.form.iphone" autocompLete="off" placeholder="请输入电话"/>
         </el-form-item>
     </el-form>
     <template #footer>

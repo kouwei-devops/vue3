@@ -13,15 +13,15 @@ class LustreQuotaQuery(BaseModel):
     cluster_id: str
     name: str        # Linux 用户
     address: str        # Lustre 路径
-    num: str      # 存储大小
+    iphone: str      # 存储大小
 
-def ssh_quota_update(host: str, name: str, address: str ,num:str) -> str:
+def ssh_quota_update(host: str, name: str, address: str ,iphone:str) -> str:
     cmd = [
         "ssh",
         "-i", "/app/ssh/id_rsa",          # 指定私钥
         "-o", "StrictHostKeyChecking=no",# （可选）首次免确认
         host,
-        f"lfs setquota -u {name} -b {num} -B {num} {address} "
+        f"lfs setquota -u {name} -b {iphone} -B {iphone} {address} "
     ]
 
     result = subprocess.run(
@@ -52,7 +52,7 @@ async def update_lustre_quota(q: LustreQuotaQuery):
         raise HTTPException(400, "invalid path")
 
     # size 只允许数字+KMGT
-    if not re.fullmatch(r"\d+(K|M|G|T)", q.num, re.IGNORECASE):
+    if not re.fullmatch(r"\d+(K|M|G|T)", q.iphone, re.IGNORECASE):
         raise HTTPException(400, "invalid size")
 
     try:
@@ -60,7 +60,7 @@ async def update_lustre_quota(q: LustreQuotaQuery):
             host=host,
             user=q.name,
             home=q.address,
-            size=q.num
+            size=q.iphone
         )
     except Exception as e:
         raise HTTPException(500, str(e))
@@ -69,7 +69,7 @@ async def update_lustre_quota(q: LustreQuotaQuery):
         "host": host,
         "user": q.name,
         "home": q.address,
-        "size": q.num,
+        "size": q.iphone,
         "result": "quota updated",
         "stdout": output
     }
