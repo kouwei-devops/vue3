@@ -3,11 +3,11 @@
 # 手动输入参数一次性设置 quota 并同步数据库
 # 输入格式:  name iphone
 
-name="$1"
-address="$2"
+name2="$1"
+address2="$2"
 
 # Lustre quota → JSON → upsert
-quota_output=$(lfs quota -uh $name $address | awk 'NR>2')
+quota_output=$(lfs quota -uah | awk 'NR>2' | grep "$name2")
 CLUSTER_ID=9654
 
 while read -r line; do
