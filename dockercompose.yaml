@@ -25,7 +25,7 @@ services:
     ports:
       - "3306:3306"                       # 将容器3306端口映射到主机
     volumes:
-      - ./mysql_data:/var/lib/mysql       # 数据持久化到当前目录
+      - /root/app/mysql_data:/var/lib/mysql       # 数据持久化到当前目录
 
 
   vue3-frontend:
