@@ -2,7 +2,7 @@
 
 # Lustre quota → JSON → upsert
 quota_output=$(lfs quota -uah | awk 'NR>2')
-CLUSTER_ID=8581
+CLUSTER_ID=9654
 
 while read -r line; do
     [[ -z "$line" ]] && continue
@@ -38,7 +38,15 @@ while read -r line; do
         --arg address "$address" \
         --arg num "$num" \
         --arg iphone "$iphone" \
-        '{id:$id, name:$name, address:$address, num:$num, iphone:$iphone, cluster_id: $cluster_id}')
+        --argjson cluster_id "$CLUSTER_ID" \
+        '{
+            id: $id,
+            name: $name,
+            address: $address,
+            num: $num,
+            iphone: $iphone,
+            cluster_id: $cluster_id
+        }')
 
     # PUT 到接口
     response=$(curl -s -o /dev/null -w "%{http_code}" -X PUT \
