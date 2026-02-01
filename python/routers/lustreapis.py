@@ -52,8 +52,8 @@ async def update_lustre_quota(q: LustreQuotaQuery):
         raise HTTPException(400, "invalid path")
 
     # size 只允许数字+KMGT
-    if not re.fullmatch(r"\d+(K|M|G|T)", q.iphone, re.IGNORECASE):
-        raise HTTPException(400, "invalid size")
+    # if not re.fullmatch(r"\d+(K|M|G|T)", q.iphone, re.IGNORECASE):
+    #     raise HTTPException(400, "invalid size")
 
     try:
         output = ssh_quota_update(
