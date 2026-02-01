@@ -2,6 +2,7 @@ from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from models import Student
 import subprocess
+import re
 router = APIRouter(prefix="/api/lustre")
 
 class LustreQuotaQuery(BaseModel):
@@ -42,8 +43,8 @@ async def update_lustre_quota(q: LustreQuotaQuery):
     if not q.home.startswith("/"):
         raise HTTPException(400, "invalid path")
 
-    # size 只允许数字（单位由你约定，比如 KB）
-    if not q.size.isdigit():
+    # size 只允许数字+KMGT
+    if not re.fullmatch(r"\d+(K|M|G|T)", q.size, re.IGNORECASE):
         raise HTTPException(400, "invalid size")
 
     try:
