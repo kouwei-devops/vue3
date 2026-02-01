@@ -1,147 +1,102 @@
 
 
 <template>
-  <!-- 顶部标题 -->
-  <div class="header-wrap">
-    <el-card class="header-card">
-      <div class="header-title">天玑智算存储配额系统</div>
-      <div class="header-sub">当前集群：{{ cluster_id }}</div>
-    </el-card>
-  </div>
-
-  <!-- 集群切换 -->
-  <div class="cluster-switch">
-    <el-button type="success" round @click="set8581">8581</el-button>
-    <el-button type="success" round @click="set9654">9654</el-button>
-  </div>
-
-  <!-- 主体内容 -->
-  <div class="content">
-    <!-- 查询区 -->
-    <div class="toolbar">
-      <el-input
-        style="width: 260px"
-        placeholder="姓名"
-        v-model="name"
-      />
-      <el-button type="primary" @click="load">查询</el-button>
-      <el-button type="primary" @click="handleadd">新增</el-button>
-      <el-button type="primary" @click="loadall">查询所有用户</el-button>
-      <el-button @click="reset">重置</el-button>
+<div
+  style="
+    margin-bottom: 30px;
+    padding: 24px;
+    border-radius: 10px;
+  "
+>
+  <el-card
+    style="
+      text-align: center;
+      background: #409EFF;
+      border: none;
+      color: #ffffff;
+    "
+  >
+    <div style="font-size: 28px; font-weight: 600; letter-spacing: 1px;">
+      天玑智算存储配额系统
     </div>
+    <div style="margin-top: 10px; font-size: 14px; color: #c7d6e5;">
+      当前集群： {{ cluster_id }}
+    </div>
+  </el-card>
+</div>
+<div style=" margin: auto; width: 70%; margin-bottom: 20px; text-align: center; font-size: 28px; font-weight: 600;
+margin-bottom: 20px; border-radius: 12px;
+box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+background: #fff; padding: 24px 20px;
+">
 
-    <!-- 表格 -->
-    <el-table border stripe :data="tableData">
-      <!-- 原表格列不动 -->
+      <el-button type="success" round @click="set8581" style="margin-right: 10px;margin-left: 10px;" >8581</el-button>
+      <el-button type="success" round @click="set9654" style="margin-right: 10px;margin-left: 10px;" >9654</el-button>
+</div>
+<div style="margin: auto; width: 70%;">
+
+   <div style="margin-bottom: 20px;">
+      <el-input type="primary" style="width: 300px;" placeholder="姓名" v-model="name"></el-input>
+      <el-button type="primary" @click="load" style="margin-right: 10px;margin-left: 10px;" >查询</el-button>
+      <el-button type="primary" @click="handleadd" style="margin-right: 10px;margin-left: 10px;" >新增</el-button>
+      <el-button type="primary" @click="loadall" style="margin-right: 10px;margin-left: 10px;" >查询所有用户</el-button>
+      <el-button type="primary" @click="reset" style="margin-right: 10px;margin-left: 10px;" >重置</el-button>
+    </div>
+    <el-table border stripe :data="tableData" style="width: 100%">
       <el-table-column prop="id" label="id" width="180" sortable />
       <el-table-column prop="name" label="姓名" width="180" sortable />
       <el-table-column prop="address" label="家目录" />
-      <el-table-column
-        prop="num"
-        label="存储大小"
-        sortable
-        :sort-method="(a, b) => parseSize(a.num) - parseSize(b.num)"
+      <el-table-column prop="num" label="存储大小" sortable
+      :sort-method="(a, b) => parseSize(a.num) - parseSize(b.num)"
       />
-      <el-table-column
-        prop="iphone"
-        label="存储配额"
-        sortable
-        :sort-method="(a, b) => parseSize(a.iphone) - parseSize(b.iphone)"
+      <el-table-column prop="iphone" label="存储配额" sortable
+      :sort-method="(a, b) => parseSize(a.iphone) - parseSize(b.iphone)"
       />
       <el-table-column prop="cluster_id" label="集群id" />
-      <el-table-column fixed="right" label="操作" min-width="120">
+      <el-table-column fixed="right" label="Operations" min-width="120">
         <template #default="scope">
-          <el-button link type="primary" size="small" @click="handleEdit(scope.row)">
+
+          <el-button link type="primary" style="margin-right: 10px;"size="small" @click="handleEdit(scope.row)">
             编辑
           </el-button>
-          <el-button link type="danger" size="small" @click="remove(scope.row)">
-            删除
-          </el-button>
+          <el-button link type="primary" style="margin-right: 10px;"size="small" @click="remove(scope.row)"> 删除 </el-button>
+
         </template>
       </el-table-column>
     </el-table>
-
-    <!-- 分页 -->
-    <div class="pagination">
-      <el-pagination
-        background
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="total"
-        v-model:page-size="pageSize"
-        v-model:current-page="pageNum"
-        @current-change="load"
-        @size-change="handleSizeChange"
+    <div style="margin: 10px;">
+      <el-pagination background layout="total, sizes, prev, pager, next, jumper"
+      :disabled="disabled"
+      :total="total" v-model:page-size="pageSize"  v-model:current-page="pageNum" @current-change="load"
+      @size-change="handleSizeChange"
       />
     </div>
-  </div>
+    <el-dialog v-model="ruleform.dialogVisible" title="学生信息" width="30%">
+      <el-form ref="formRef" :model="ruleform.form" :rules="rules"  Label-width="80px" style="padding: 20px">
+        <el-form-item prop="name" label="姓名">
+          <el-input v-model="ruleform.form.name" autocompLete="off" placeholder="请输入姓名"/>
+        </el-form-item>
+                <el-form-item prop="address" label="家目录">
+          <el-input v-model="ruleform.form.address" autocompLete="off" placeholder="请输入地址"/>
+        </el-form-item>
+                <el-form-item prop="iphone" label="配额大小">
+          <el-input v-model="ruleform.form.iphone" autocompLete="off" placeholder="请输入电话"/>
+        </el-form-item>
+    </el-form>
+    <template #footer>
+      <div class="dialog-footer">
+        <el-button @click="ruleform.dialogVisible = false">取消</el-button>
+        <el-button type="primary" @click="save">保存</el-button>
+      </div>
+    </template>
+    </el-dialog>
 
-  <!-- 弹窗：原样保留 -->
-  <!-- el-dialog 原代码不动 -->
+
+
+  </div>
 </template>
 
-<style scoped>
-/* 页面整体居中 */
-.header-wrap {
-  width: 100%;
-  margin-bottom: 24px;
-}
-
-.header-card {
-  text-align: center;
-  background: linear-gradient(135deg, #409eff, #66b1ff);
-  border: none;
-  color: #fff;
-  padding: 20px 0;
-}
-
-.header-title {
-  font-size: 28px;
-  font-weight: 600;
-  letter-spacing: 1px;
-}
-
-.header-sub {
-  margin-top: 8px;
-  font-size: 14px;
-  color: #e3effa;
-}
-
-/* 集群切换 */
-.cluster-switch {
-  width: 70%;
-  margin: 0 auto 24px;
-  padding: 20px;
-  text-align: center;
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
-}
-
-.cluster-switch .el-button {
-  margin: 0 12px;
-}
-
-/* 主体内容 */
-.content {
-  width: 70%;
-  margin: 0 auto;
-}
-
-/* 查询工具栏 */
-.toolbar {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 16px;
-}
-
-/* 分页 */
-.pagination {
-  margin-top: 16px;
-  text-align: right;
-}
-</style>
-
+<style scoped></style>
 <script lang="ts" setup>
 import axios from 'axios'
 import { da, pa, ru, ta, tr } from 'element-plus/es/locale'
