@@ -205,17 +205,31 @@ const add = () => {
       load()
   })
 }
-const update = () => {
-  axios.post('http://' + ip + '/api/lustre/quota/update',ruleform.form).then(res => {
-    if (res.status == 200) {
-      console.log(res.data)
-      ruleform.dialogVisible = false
+
+const updating = ref(false)
+const update = async () => {
+  if (updating.value) return
+  updating.value = true
+
+  try {
+    const res = await axios.post(
+      'http://' + ip + '/api/lustre/quota/update',
+      { ...ruleform.form }   // 解构，避免 reactive 副作用
+    )
+
+    if (res.status === 200) {
       ElMessage.success('更新成功')
-      load()
-    }else{
+      ruleform.dialogVisible = false
+      await load()           // 等数据刷新完
+    } else {
       ElMessage.error('更新失败')
     }
-  })
+  } catch (err) {
+    console.error(err)
+    ElMessage.error('请求失败')
+  } finally {
+    updating.value = false
+  }
 }
 
 /* 保存按钮：提交表单 */
