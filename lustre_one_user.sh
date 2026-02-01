@@ -1,65 +1,55 @@
 #!/bin/bash
+set -e
 
-# 手动输入参数一次性设置 quota 并同步数据库
-# 输入格式:  name iphone
-
-name2="$1"
-address2="$2"
-
-# Lustre quota → JSON → upsert
-quota_output=$(lfs quota -uah | awk 'NR>2' | grep "$name2")
+name="$1"
+address="$2"
 CLUSTER_ID=9654
 
-while read -r line; do
-    [[ -z "$line" ]] && continue
+if [[ -z "$name" || -z "$address" ]]; then
+  echo "Usage: $0 <username> <lustre_path>"
+  exit 1
+fi
 
-    # 拆列
-    read -ra cols <<< "$line"
-    [[ ${#cols[@]} -lt 4 ]] && continue
+# 获取 uid
+id=$(id -u "$name" 2>/dev/null || echo 0)
 
-    filesystem="${cols[0]}"   # /opt/phadcloud/lustre
-    user_or_id="${cols[1]}"   # quota_id 或用户名
-    num="${cols[2]}"           # 第3列
-    iphone="${cols[3]}"        # 第4列
+# 只取最后一行（真正的数据行）
+line=$(lfs quota -uh "$name" "$address" | tail -n 1)
 
-    # 判断是数字还是用户名
-    if [[ "$user_or_id" =~ ^[0-9]+$ ]]; then
-        id="$user_or_id"
-        name="$user_or_id"
-        # 数字 UID 用户，用 $HOME
-        address="$HOME"
-    else
-        name="$user_or_id"
-        id=$(id -u "$name" 2>/dev/null || echo 0)
-        # 查询 home 目录
-        home_dir=$(getent passwd "$name" | cut -d: -f6)
-        [[ -z "$home_dir" ]] && home_dir="$HOME"
-        address="$home_dir"
-    fi
+[[ -z "$line" ]] && {
+  echo "No quota info found"
+  exit 1
+}
 
-    # 构建 JSON
-    json_obj=$(jq -n \
-        --argjson id "$id" \
-        --arg name "$name" \
-        --arg address "$address" \
-        --arg num "$num" \
-        --arg iphone "$iphone" \
-        --arg cluster_id "$CLUSTER_ID" \
-        '{
-            id: $id,
-            name: $name,
-            address: $address,
-            num: $num,
-            iphone: $iphone,
-            cluster_id: $cluster_id
-        }')
+# 拆列
+read -ra cols <<< "$line"
 
-    # PUT 到接口
-    response=$(curl -s -o /dev/null -w "%{http_code}" -X PUT \
-        -H "Content-Type: application/json" \
-        -d "$json_obj" \
-        http://10.82.4.120:8000/api/resave)
+filesystem="${cols[0]}"
+used="${cols[1]}"
+quota="${cols[2]}"
 
-    echo "Sent: $json_obj | HTTP: $response"
+# 构建 JSON
+json_obj=$(jq -n \
+  --argjson id "$id" \
+  --arg name "$name" \
+  --arg address "$filesystem" \
+  --arg num "$used" \
+  --arg iphone "$quota" \
+  --arg cluster_id "$CLUSTER_ID" \
+  '{
+    id: $id,
+    name: $name,
+    address: $address,
+    num: $num,
+    iphone: $iphone,
+    cluster_id: $cluster_id
+  }'
+)
 
-done <<< "$quota_output"
+# PUT 到接口
+response=$(curl -s -o /dev/null -w "%{http_code}" -X PUT \
+  -H "Content-Type: application/json" \
+  -d "$json_obj" \
+  http://10.82.4.120:8000/api/resave)
+
+echo "Sent: $json_obj | HTTP: $response"
