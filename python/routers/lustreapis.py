@@ -10,7 +10,7 @@ CLUSTER_HOST_MAP = {
     9654: "node120",
 }
 class LustreQuotaQuery(BaseModel):
-    cluster_id: str
+    cluster_id: id
     name: str        # Linux 用户
     address: str        # Lustre 路径
     iphone: str      # 存储大小

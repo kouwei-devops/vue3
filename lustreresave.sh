@@ -38,7 +38,7 @@ while read -r line; do
         --arg address "$address" \
         --arg num "$num" \
         --arg iphone "$iphone" \
-        --argjson cluster_id "$CLUSTER_ID" \
+        --arg cluster_id "$CLUSTER_ID" \
         '{
             id: $id,
             name: $name,
