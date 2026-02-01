@@ -58,18 +58,18 @@ async def update_lustre_quota(q: LustreQuotaQuery):
     try:
         output = ssh_quota_update(
             host=host,
-            user=q.name,
-            home=q.address,
-            size=q.iphone
+            name=q.name,
+            address=q.address,
+            iphone=q.iphone
         )
     except Exception as e:
         raise HTTPException(500, str(e))
 
     return {
         "host": host,
-        "user": q.name,
-        "home": q.address,
-        "size": q.iphone,
+        "name": q.name,
+        "address": q.address,
+        "iphone": q.iphone,
         "result": "quota updated",
         "stdout": output
     }
