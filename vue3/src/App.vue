@@ -27,7 +27,7 @@
 <div style=" margin: auto; width: 70%; margin-bottom: 20px; text-align: center; font-size: 28px; font-weight: 600;
 margin-bottom: 20px; border-radius: 12px;
 box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
-background: #fff;
+background: #fff; padding: 24px 20px;
 ">
 
       <el-button type="success" round @click="set8581" style="margin-right: 10px;margin-left: 10px;" >8581</el-button>
