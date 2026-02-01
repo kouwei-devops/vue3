@@ -10,10 +10,12 @@ CLUSTER_HOST_MAP = {
     9654: "node120",
 }
 class LustreQuotaQuery(BaseModel):
-    cluster_id: str
-    name: str        # Linux 用户
-    address: str        # Lustre 路径
-    iphone: str      # 存储大小
+    id: int | None = None
+    num: str | None = None
+    name: str | None = None
+    address: str | None = None
+    iphone: str | None = None
+    cluster_id: int | None = None
 
 def ssh_quota_update(host: str, name: str, address: str ,iphone:str) -> str:
     cmd = [
