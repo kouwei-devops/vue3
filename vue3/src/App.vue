@@ -72,11 +72,11 @@
         <el-form-item prop="name" label="姓名">
           <el-input v-model="ruleform.form.name" autocompLete="off" placeholder="请输入姓名"/>
         </el-form-item>
-                <el-form-item prop="address" label="地址">
+                <el-form-item prop="address" label="家目录">
           <el-input v-model="ruleform.form.address" autocompLete="off" placeholder="请输入地址"/>
         </el-form-item>
-                <el-form-item prop="iphone" label="电话">
-          <el-input v-model="ruleform.form.iphone" autocompLete="off" placeholder="请输入电话"/>
+                <el-form-item prop="num" label="配额大小">
+          <el-input v-model="ruleform.form.num" autocompLete="off" placeholder="请输入电话"/>
         </el-form-item>
     </el-form>
     <template #footer>
@@ -129,7 +129,7 @@ const rules = reactive({
     { required: true, message: '地址不能为空', trigger: 'blur' },
     { min: 5, message: '地址不能少于 5 个字符', trigger: 'blur' }
   ],
-  iphone: [
+  num: [
     { required: true, message: '手机号不能为空', trigger: 'blur' },
     {
       pattern: /^1[3-9]\d{9}$/,
@@ -202,7 +202,7 @@ const add = () => {
   })
 }
 const update = () => {
-  axios.put('http://' + ip + '/api/update',ruleform.form).then(res => {
+  axios.post('http://' + ip + '/api/lustre/quota/update',ruleform.form).then(res => {
     if (res.status == 200) {
       console.log(res.data)
       ruleform.dialogVisible = false
@@ -222,7 +222,7 @@ const save = async () => {
   if (ruleform.form.id) {
     await update()
   } else {
-    await add()
+    ElMessage.error('表单校验不通过')
   }
 
 }

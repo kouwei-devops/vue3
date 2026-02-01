@@ -5,19 +5,23 @@ import subprocess
 import re
 router = APIRouter(prefix="/api/lustre")
 
+CLUSTER_HOST_MAP = {
+    8581: "node202",
+    9654: "node120",
+}
 class LustreQuotaQuery(BaseModel):
-    host: str        # 计算节点
-    user: str        # Linux 用户
-    home: str        # Lustre 路径
-    size: str      # 存储大小
+    cluster_id: str
+    name: str        # Linux 用户
+    address: str        # Lustre 路径
+    num: str      # 存储大小
 
-def ssh_quota_update(host: str, user: str, home: str ,size:str) -> str:
+def ssh_quota_update(host: str, name: str, address: str ,num:str) -> str:
     cmd = [
         "ssh",
         "-i", "/app/ssh/id_rsa",          # 指定私钥
         "-o", "StrictHostKeyChecking=no",# （可选）首次免确认
         host,
-        f"lfs setquota -u {user} -b {size} -B {size} {home} "
+        f"lfs setquota -u {name} -b {num} -B {num} {address} "
     ]
 
     result = subprocess.run(
@@ -36,32 +40,36 @@ def ssh_quota_update(host: str, user: str, home: str ,size:str) -> str:
 @router.post("/quota/update")
 async def update_lustre_quota(q: LustreQuotaQuery):
 
+    # —— cluster_id 校验 + 映射 ——
+    host = CLUSTER_HOST_MAP.get(q.cluster_id)
+    if not host:
+        raise HTTPException(400, f"invalid cluster_id: {q.cluster_id}")
     # —— 基本安全校验 ——
-    if not q.user.isalnum():
+    if not q.name.isalnum():
         raise HTTPException(400, "invalid user")
 
-    if not q.home.startswith("/"):
+    if not q.address.startswith("/"):
         raise HTTPException(400, "invalid path")
 
     # size 只允许数字+KMGT
-    if not re.fullmatch(r"\d+(K|M|G|T)", q.size, re.IGNORECASE):
+    if not re.fullmatch(r"\d+(K|M|G|T)", q.num, re.IGNORECASE):
         raise HTTPException(400, "invalid size")
 
     try:
         output = ssh_quota_update(
-            host=q.host,
-            user=q.user,
-            home=q.home,
-            size=q.size
+            host=host,
+            user=q.name,
+            home=q.address,
+            size=q.num
         )
     except Exception as e:
         raise HTTPException(500, str(e))
 
     return {
-        "host": q.host,
-        "user": q.user,
-        "home": q.home,
-        "size": q.size,
+        "host": host,
+        "user": q.name,
+        "home": q.address,
+        "size": q.num,
         "result": "quota updated",
         "stdout": output
     }
