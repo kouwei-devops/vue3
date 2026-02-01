@@ -5,7 +5,7 @@ import subprocess
 router = APIRouter(prefix="/api/lustre")
 
 class LustreQuotaQuery(BaseModel):
-    host: str        # 计算节点 
+    host: str        # 计算节点
     user: str        # Linux 用户
     home: str        # Lustre 路径
 
@@ -19,7 +19,7 @@ def ssh_quota_query(host: str, user: str, home: str) -> str:
     result = subprocess.run(
         cmd,
         stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE, 
+        stderr=subprocess.PIPE,
         text=True,
         timeout=10
     )
