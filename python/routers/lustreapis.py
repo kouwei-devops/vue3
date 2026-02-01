@@ -21,7 +21,7 @@ def ssh_quota_update(host: str, name: str, address: str ,iphone:str) -> str:
         "-i", "/app/ssh/id_rsa",          # 指定私钥
         "-o", "StrictHostKeyChecking=no",# （可选）首次免确认
         host,
-        f"lfs setquota -u {name} -b {iphone} -B {iphone} {address} "
+        f"lfs setquota -u {name} -b {iphone} -B {iphone} {address} && bash /root/app/vue3/lustre_one_user.sh {name} {address}  "
     ]
 
     result = subprocess.run(
