@@ -37,7 +37,7 @@
       <el-button type="primary" @click="handleadd" style="margin-right: 10px;margin-left: 10px;" >新增</el-button>
       <el-button type="primary" @click="loadall" style="margin-right: 10px;margin-left: 10px;" >查询所有用户</el-button>
       <el-button type="primary" @click="reset" style="margin-right: 10px;margin-left: 10px;" >重置</el-button>
-    </div> 
+    </div>
     <el-table border stripe :data="tableData" style="width: 100%">
       <el-table-column prop="id" label="id" width="180" sortable />
       <el-table-column prop="name" label="姓名" width="180" sortable />
@@ -187,7 +187,7 @@ const remove = (row) => {
 }
 
 /* 后端服务地址 */
-const ip = '127.0.0.1:8000'
+const ip = '10.82.4.120:8000'
 
 /* 新增按钮：打开弹窗并清空表单 */
 const handleadd = () => {
