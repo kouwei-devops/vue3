@@ -24,7 +24,10 @@
     </div>
   </el-card>
 </div>
-<div style="margin: auto; width: 70%; margin-bottom: 20px; text-align: center; font-size: 28px; font-weight: 600;a ">
+<div style=" margin: auto; width: 70%; margin-bottom: 20px; text-align: center; font-size: 28px; font-weight: 600;
+box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+background: #fff;
+">
 
       <el-button type="success" round @click="set8581" style="margin-right: 10px;margin-left: 10px;" >8581</el-button>
       <el-button type="success" round @click="set9654" style="margin-right: 10px;margin-left: 10px;" >9654</el-button>
