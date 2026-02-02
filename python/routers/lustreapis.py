@@ -4,7 +4,7 @@ from models import Student
 import subprocess
 import re
 router = APIRouter(prefix="/api/lustre")
-
+import logging
 CLUSTER_HOST_MAP = {
     8581: "node202",
     9654: "node120",
@@ -39,12 +39,13 @@ def ssh_quota_update(host: str, name: str, address: str ,iphone:str) -> str:
             stdout=subprocess.DEVNULL,
             stderr=subprocess.DEVNULL,
             timeout=5,
-            check=False   # 如果 SSH 连接失败，会抛出异常
+            check=True   # 如果 SSH 连接失败，会抛出异常
         )
     except subprocess.TimeoutExpired:
         raise RuntimeError("ssh command timeout")
-    except subprocess.CalledProcessError:
-        raise RuntimeError("ssh command failed")
+    except subprocess.CalledProcessError as e:
+        msg = e.stderr.strip() if e.stderr else "ssh command failed"
+        raise RuntimeError(msg)
 
     # nohup 后台执行，stdout/stderr 已经重定向到日志
     # 返回一个固定值表示任务已经提交
