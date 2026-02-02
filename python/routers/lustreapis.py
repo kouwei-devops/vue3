@@ -39,12 +39,15 @@ def ssh_quota_update(host: str, name: str, address: str ,iphone:str) -> str:
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             timeout=5,
-            check=True   # 如果 SSH 连接失败，会抛出异常
+            check=True,
+            text=True
         )
+
     except subprocess.TimeoutExpired:
         raise RuntimeError("ssh command timeout")
+
     except subprocess.CalledProcessError as e:
-        msg = e.stderr.strip() if e.stderr else "ssh command failed"
+        msg = (e.stderr or e.stdout or "ssh command failed").strip()
         raise RuntimeError(msg)
 
     # nohup 后台执行，stdout/stderr 已经重定向到日志
