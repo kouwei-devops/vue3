@@ -39,7 +39,7 @@ def ssh_quota_update(host: str, name: str, address: str ,iphone:str) -> str:
             stdout=subprocess.DEVNULL,
             stderr=subprocess.DEVNULL,
             timeout=5,
-            check=True   # 如果 SSH 连接失败，会抛出异常
+            check=False   # 如果 SSH 连接失败，会抛出异常
         )
     except subprocess.TimeoutExpired:
         raise RuntimeError("ssh command timeout")
