@@ -23,7 +23,7 @@ def ssh_quota_update(host: str, name: str, address: str ,iphone:str) -> str:
         "-i", "/app/ssh/id_rsa",
         "-o", "StrictHostKeyChecking=no",
         "-o", "BatchMode=yes",
-        "-o", "ConnectTimeout=20",
+        # "-o", "ConnectTimeout=20",
         "-T",
         host,
         (
@@ -37,7 +37,7 @@ def ssh_quota_update(host: str, name: str, address: str ,iphone:str) -> str:
         cmd,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
-        timeout=5,
+        timeout=20,
         check=False,
         text=True
     )
