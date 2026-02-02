@@ -23,7 +23,7 @@ def ssh_quota_update(host: str, name: str, address: str ,iphone:str) -> str:
         "-i", "/app/ssh/id_rsa",
         "-o", "StrictHostKeyChecking=no",
         "-o", "BatchMode=yes",
-        "-o", "ConnectTimeout=5",
+        "-o", "ConnectTimeout=20",
         "-T",
         host,
         (
