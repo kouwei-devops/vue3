@@ -36,8 +36,8 @@ def ssh_quota_update(host: str, name: str, address: str ,iphone:str) -> str:
     try:
         subprocess.run(
             cmd,
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
             timeout=5,
             check=True   # 如果 SSH 连接失败，会抛出异常
         )
