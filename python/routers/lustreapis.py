@@ -39,7 +39,7 @@ def ssh_quota_update(host: str, name: str, address: str ,iphone:str) -> str:
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             timeout=5,
-            check=True,
+            check=False,
             text=True
         )
 
