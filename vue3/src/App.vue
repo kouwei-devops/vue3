@@ -90,9 +90,6 @@ background: #fff; padding: 24px 20px;
       </div>
     </template>
     </el-dialog>
-
-
-
   </div>
 </template>
 

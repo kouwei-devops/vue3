@@ -9,6 +9,8 @@ CLUSTER_HOST_MAP = {
     8581: "node202",
     9654: "node120",
 }
+
+
 class LustreQuotaQuery(BaseModel):
     cluster_id: int
     name: str        # Linux 用户
@@ -18,7 +20,7 @@ class LustreQuotaQuery(BaseModel):
 def ssh_quota_update(host: str, name: str, address: str ,iphone:str) -> str:
     cmd = [
         "ssh",
-        "-i", "/app/ssh/id_rsa",
+        "-i", "/root/.ssh/id_rsa",
         "-o", "StrictHostKeyChecking=no",
         "-o", "BatchMode=yes",
         "-o", "ConnectTimeout=5",
