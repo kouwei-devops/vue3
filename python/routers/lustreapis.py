@@ -26,21 +26,23 @@ def ssh_quota_update(host: str, name: str, address: str, iphone: str) -> str:
         "-T",
         host,
         (
-            f"lfs setquota -u {name} -b {iphone} -B {iphone} {address} "
-            f"&& bash /root/app/vue3/lustre_one_user.sh {name} {address}"
+            f"nohup "
+            f"lfs setquota -u {name} -b {iphone} -B {iphone} {address}; "
+            f"bash /root/app/vue3/lustre_one_user.sh {name} {address} "
+            f"> /tmp/lustre_quota_{name}.log 2>&1 & "
+            f"exit 0"
         )
     ]
 
     subprocess.run(
         cmd,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        timeout=60,
-        check=True,
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+        check=False,
         text=True
     )
 
-    return "ok"
+    return "submitted"
 
 @router.post("/quota/update")
 async def update_lustre_quota(q: LustreQuotaQuery):
