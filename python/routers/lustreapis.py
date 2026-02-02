@@ -17,13 +17,12 @@ class LustreQuotaQuery(BaseModel):
     address: str        # Lustre 路径
     iphone: str      # 存储大小
 
-def ssh_quota_update(host: str, name: str, address: str ,iphone:str) -> str:
+def ssh_quota_update(host: str, name: str, address: str, iphone: str) -> str:
     cmd = [
         "ssh",
         "-i", "/app/ssh/id_rsa",
         "-o", "StrictHostKeyChecking=no",
         "-o", "BatchMode=yes",
-        # "-o", "ConnectTimeout=20",
         "-T",
         host,
         (
@@ -35,17 +34,15 @@ def ssh_quota_update(host: str, name: str, address: str ,iphone:str) -> str:
 
     subprocess.run(
         cmd,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        timeout=20,
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
         check=False,
         text=True
     )
 
-
-    # nohup 后台执行，stdout/stderr 已经重定向到日志
-    # 返回一个固定值表示任务已经提交
+    # 提交即返回
     return "submitted"
+
 
 @router.post("/quota/update")
 async def update_lustre_quota(q: LustreQuotaQuery):
