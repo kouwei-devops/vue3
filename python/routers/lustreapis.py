@@ -20,7 +20,7 @@ class LustreQuotaQuery(BaseModel):
 def ssh_quota_update(host: str, name: str, address: str ,iphone:str) -> str:
     cmd = [
         "ssh",
-        "-i", "/root/.ssh/id_rsa",
+        "-i", "/app/ssh/id_rsa",
         "-o", "StrictHostKeyChecking=no",
         "-o", "BatchMode=yes",
         "-o", "ConnectTimeout=5",
