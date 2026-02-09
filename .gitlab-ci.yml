@@ -46,4 +46,5 @@ kubapply:
     - git clone -b test http://gitlab.phadcloud.local/kouwei/lustre-qouta.git
     - sleep 5
     - cd lustre-qouta
-    - kubectl apply -f lustre-quota.yaml
+    - kubectl rollout restart deployment lustre-python-deployment -n lustre
+    - kubectl rollout restart deployment lustre-vue3-deployment -n lustre
