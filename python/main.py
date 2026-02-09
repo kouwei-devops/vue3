@@ -6,11 +6,12 @@ from tortoise.contrib.fastapi import register_tortoise
 from settings import TORTOISE_ORM_CONFIG
 from models import Student
 
-from routers import stuapis
+from routers import stuapis 
+from routers import lustreapis
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
-
+app.include_router(lustreapis.router)
 app.include_router(stuapis.router)
 ## 注册
 register_tortoise(app, config=TORTOISE_ORM_CONFIG,add_exception_handlers=True)

@@ -3,7 +3,7 @@ import json
 from fastapi import APIRouter
 from pydantic import BaseModel
 from models import Student
-
+import paramiko
 router = APIRouter(prefix="/api")
 
 class StudentModel(BaseModel):
@@ -12,6 +12,7 @@ class StudentModel(BaseModel):
     name: str | None = None
     address: str | None = None
     iphone: str | None = None
+    cluster_id: int | None = None
 
 @router.get("/selectAll")
 async def select_all_student(name:str=''):
@@ -77,19 +78,19 @@ async def save_student(student_model: StudentModel):
 
 
 @router.get("/selectPage")
-async def select_page_student(name: str = '',pagenum: int = 1, pagesize: int = 10):
+async def select_page_student(name: str = '',pagenum: int = 1, pagesize: int = 10, cluster_id: int = ''):
     offset = (pagenum - 1) * pagesize
-    total = await Student.filter(name__contains=name).count()
+    total = await Student.filter(name__contains=name, cluster_id=cluster_id).count()
     json1 = json.dumps(total, ensure_ascii=False)
     print("总记录数：", json1)
     total_pages = (total + pagesize - 1) // pagesize
-    students = await Student.filter(name__contains=name).offset(offset).limit(pagesize).order_by('-id')
-
+    students = await Student.filter(name__contains=name, cluster_id=cluster_id).offset(offset).limit(pagesize).order_by('-id')
     return {
             "students": students,
             "total": total,  # ✅ 返回总记录数
             "page": pagenum,
             "pagesize": pagesize,
         }
+
 ## 导出router
 __all__ = ["router"]

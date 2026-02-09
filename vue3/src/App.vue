@@ -1,17 +1,58 @@
 
 
 <template>
-  <div style="margin: auto; width: 70%;">
-    <div>
-      <el-button type="primary" style="margin:30px auto; text-align: center; ">数据展示</el-button>
-    </div style="margin-bottom: 30px;">
-    <el-input type="primary" style="width: 300px;" placeholder="姓名" v-model="name"></el-input>
-    <el-button type="primary" @click="load" style="margin-right: 10px;margin-left: 10px;" >查询</el-button>
-    <el-button type="primary" @click="handleadd" style="margin-right: 10px;margin-left: 10px;" >新增</el-button>
+<div
+  style="
+    margin-bottom: 30px;
+    padding: 24px;
+    border-radius: 10px;
+  "
+>
+  <el-card
+    style="
+      text-align: center;
+      background: #409EFF;
+      border: none;
+      color: #ffffff;
+    "
+  >
+    <div style="font-size: 28px; font-weight: 600; letter-spacing: 1px;">
+      天玑智算存储配额系统
+    </div>
+    <div style="margin-top: 10px; font-size: 14px; color: #c7d6e5;">
+      当前集群： {{ cluster_id }}
+    </div>
+  </el-card>
+</div>
+<div style=" margin: auto; width: 70%; margin-bottom: 20px; text-align: center; font-size: 28px; font-weight: 600;
+margin-bottom: 20px; border-radius: 12px;
+box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+background: #fff; padding: 24px 20px;
+">
+
+      <el-button type="success" round @click="set8581" style="margin-right: 10px;margin-left: 10px;" >8581</el-button>
+      <el-button type="success" round @click="set9654" style="margin-right: 10px;margin-left: 10px;" >9654</el-button>
+</div>
+<div style="margin: auto; width: 70%;">
+
+   <div style="margin-bottom: 20px;">
+      <el-input type="primary" style="width: 300px;" placeholder="姓名" v-model="name"></el-input>
+      <el-button type="primary" @click="load" style="margin-right: 10px;margin-left: 10px;" >查询</el-button>
+      <el-button type="primary" @click="handleadd" style="margin-right: 10px;margin-left: 10px;" >新增</el-button>
+      <el-button type="primary" @click="loadall" style="margin-right: 10px;margin-left: 10px;" >查询所有用户</el-button>
+      <el-button type="primary" @click="reset" style="margin-right: 10px;margin-left: 10px;" >重置</el-button>
+    </div>
     <el-table border stripe :data="tableData" style="width: 100%">
-      <el-table-column prop="id" label="Date" width="180" />
-      <el-table-column prop="name" label="Name" width="180" />
-      <el-table-column prop="address" label="Address" />
+      <el-table-column prop="id" label="id" width="180" sortable />
+      <el-table-column prop="name" label="姓名" width="180" sortable />
+      <el-table-column prop="address" label="家目录" />
+      <el-table-column prop="num" label="存储大小" sortable
+      :sort-method="(a, b) => parseSize(a.num) - parseSize(b.num)"
+      />
+      <el-table-column prop="iphone" label="存储配额" sortable
+      :sort-method="(a, b) => parseSize(a.iphone) - parseSize(b.iphone)"
+      />
+      <el-table-column prop="cluster_id" label="集群id" />
       <el-table-column fixed="right" label="Operations" min-width="120">
         <template #default="scope">
 
@@ -19,7 +60,7 @@
             编辑
           </el-button>
           <el-button link type="primary" style="margin-right: 10px;"size="small" @click="remove(scope.row)"> 删除 </el-button>
-         
+
         </template>
       </el-table-column>
     </el-table>
@@ -35,10 +76,10 @@
         <el-form-item prop="name" label="姓名">
           <el-input v-model="ruleform.form.name" autocompLete="off" placeholder="请输入姓名"/>
         </el-form-item>
-                <el-form-item prop="address" label="地址">
+                <el-form-item prop="address" label="家目录">
           <el-input v-model="ruleform.form.address" autocompLete="off" placeholder="请输入地址"/>
         </el-form-item>
-                <el-form-item prop="iphone" label="电话">
+                <el-form-item prop="iphone" label="配额大小">
           <el-input v-model="ruleform.form.iphone" autocompLete="off" placeholder="请输入电话"/>
         </el-form-item>
     </el-form>
@@ -49,9 +90,6 @@
       </div>
     </template>
     </el-dialog>
-
-
-
   </div>
 </template>
 
@@ -92,7 +130,7 @@ const rules = reactive({
     { required: true, message: '地址不能为空', trigger: 'blur' },
     { min: 5, message: '地址不能少于 5 个字符', trigger: 'blur' }
   ],
-  iphone: [
+  num: [
     { required: true, message: '手机号不能为空', trigger: 'blur' },
     {
       pattern: /^1[3-9]\d{9}$/,
@@ -103,9 +141,11 @@ const rules = reactive({
 })
 
 /* 查询条件：姓名 */
+const cluster_id = ref("8581")
 const id = ref('')
 const name = ref('')
 const num = ref('')
+const iphone = ref()
 const formRef = ref()
 /* 分页相关变量 */
 const pageSize = ref(10)         // 每页条数
@@ -117,7 +157,7 @@ const total = ref(0)             // 总记录数
 const handleEdit = (row) => {
   ruleform.form = JSON.parse(JSON.stringify(row))
   ruleform.dialogVisible = true
-  
+
 }
 
 /* 删除按钮点击事件（未实现） */
@@ -148,7 +188,7 @@ const remove = (row) => {
 }
 
 /* 后端服务地址 */
-const ip = '127.0.0.1:8000'
+const ip = '10.82.4.120:8000'
 
 /* 新增按钮：打开弹窗并清空表单 */
 const handleadd = () => {
@@ -161,18 +201,32 @@ const add = () => {
       ruleform.dialogVisible = false
       load()
   })
-} 
-const update = () => {
-  axios.put('http://' + ip + '/api/update',ruleform.form).then(res => {
-    if (res.status == 200) {
-      console.log(res.data)
-      ruleform.dialogVisible = false
+}
+
+const updating = ref(false)
+const update = async () => {
+  if (updating.value) return
+  updating.value = true
+
+  try {
+    const res = await axios.post(
+      'http://' + ip + '/api/lustre/quota/update',
+      { ...ruleform.form }   // 解构，避免 reactive 副作用
+    )
+
+    if (res.status === 200) {
       ElMessage.success('更新成功')
-      load()
-    }else{
+      ruleform.dialogVisible = false
+      await load()           // 等数据刷新完
+    } else {
       ElMessage.error('更新失败')
     }
-  })
+  } catch (err) {
+    console.error(err)
+    ElMessage.error('请求失败')
+  } finally {
+    updating.value = false
+  }
 }
 
 /* 保存按钮：提交表单 */
@@ -183,7 +237,7 @@ const save = async () => {
   if (ruleform.form.id) {
     await update()
   } else {
-    await add()
+    ElMessage.error('表单校验不通过')
   }
 
 }
@@ -195,9 +249,9 @@ const load = async () => {
       num: num.value,
       pagenum: pageNum.value,
       pagesize: pageSize.value,
+      cluster_id: cluster_id.value,
     }
   })
-
   console.log(res.data)
   tableData.value = res.data.students
   id.value = res.data.id
@@ -205,6 +259,68 @@ const load = async () => {
   total.value = res.data.total
   pageSize.value = res.data.pagesize
   pageNum.value = res.data.page
+  iphone.value = res.data.iphone
+}
+const loadall = async () => {
+  const res = await axios.get('http://' + ip + '/api/selectPage', {
+    params: {
+      name: name.value,
+      num: num.value,
+      pagenum: pageNum.value,
+      pagesize: pageSize.value,
+      cluster_id: cluster_id.value,
+    }
+  })
+  console.log(res.data)
+  tableData.value = res.data.students
+  id.value = res.data.id
+  num.value = res.data.num
+  total.value = res.data.total
+  pageSize.value = 9999999
+  pageNum.value = res.data.page
+  iphone.value = res.data.iphone
+  load()
+}
+
+const parseSize = (size) => {
+  if (!size) return 0
+
+  const s = size.toString().trim()
+  const value = parseFloat(s)
+  if (isNaN(value)) return 0
+
+  const unit = s.slice(-1).toUpperCase()
+
+  switch (unit) {
+    case 'T':
+      return value * 1024 ** 4
+    case 'G':
+      return value * 1024 ** 3
+    case 'M':
+      return value * 1024 ** 2
+    case 'K':
+      return value * 1024
+    default:
+      return value // 已经是字节
+  }
+}
+const reset = () => {
+
+  pageSize.value = 10
+  pageNum.value = 1
+
+  load()
+
+}
+const set8581 = () => {
+  cluster_id.value = "8581"
+  ElMessage.success('已切换到集群8581')
+  load()
+}
+const set9654 = () => {
+  cluster_id.value = "9654"
+  ElMessage.success('已切换到集群9654')
+  load()
 }
 
 load()
