@@ -44,5 +44,6 @@ kubapply:
     - cd /root/ansible/lustre
     - rm -rf lustre-qouta
     - git clone -b test http://gitlab.phadcloud.local/kouwei/lustre-qouta.git
+    - sleep 5
     - cd lustre-qouta
     - kubectl apply -f lustre-quota.yaml
