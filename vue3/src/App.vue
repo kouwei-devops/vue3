@@ -140,7 +140,7 @@ const rules = reactive({
   ]
 })
 
-/* 查询条件：姓名 */
+/* 查询1条件：姓名 */
 const cluster_id = ref("8581")
 const id = ref('')
 const name = ref('')
