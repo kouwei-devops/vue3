@@ -16,6 +16,7 @@ spec:
       containers:
       - name: lustre-python
         image: harbor.phadcloud.local/lustre/python:latest
+        imagePullPolicy: Always
         ports:
         - containerPort: 8000
 ---
@@ -51,6 +52,7 @@ spec:
       containers:
       - name: lustre-vue3
         image: harbor.phadcloud.local/lustre/vue3:latest
+        imagePullPolicy: Always
         ports:
         - containerPort: 80
 ---
