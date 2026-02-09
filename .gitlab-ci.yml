@@ -19,26 +19,30 @@ before_script:
 
 build:
   stage: build
+  tags :
+    - docker
   script:
-    - docker build -t python -f dockerfile1
+    - docker build -t python -f dockerfile1 .
     - docker tag python harbor.phadcloud.local/lustre/python:latest
-    - docker build -t vue3 -f dockerfile2
+    - docker build -t vue3 -f dockerfile2 .
     - docker tag vue3 harbor.phadcloud.local/lustre/vue3:latest
 push:
   only:
     - branches
   stage: push
+  tags :
+    - docker
   script:
     - echo "$REGISTRY_PASSWORD" | docker login $REGISTRY -u "$REGISTRY_USER" --password-stdin
     - docker push harbor.phadcloud.local/lustre/python:latest
     - docker push harbor.phadcloud.local/lustre/vue3:latest
-  only:
-    - branches
 kubapply:
   stage: kubapply
   tags:
-   - ssh
+    - k8s-ssh
   script:
     - cd /root/ansible/lustre
+    - rm -rf lustre-qouta
     - git clone -b test http://gitlab.phadcloud.local/kouwei/lustre-qouta.git
+    - cd lustre-qouta
     - kubectl apply -f lustre-quota.yaml
