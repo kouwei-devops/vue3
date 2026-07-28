@@ -36,3 +36,7 @@ npm run dev
 ```sh
 npm run build
 ```
+## SSH Push Test
+
+- Verified SSH push access from Hermes Agent.
+
