@@ -17,7 +17,7 @@
     "
   >
     <div style="font-size: 28px; font-weight: 600; letter-spacing: 1px;">
-      天玑智算存储配额系统
+      天玑智算存储配额可视化
     </div>
     <div style="margin-top: 10px; font-size: 14px; color: #c7d6e5;">
       当前集群： {{ cluster_id }}
