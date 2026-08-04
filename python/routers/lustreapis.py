@@ -36,7 +36,7 @@ def ssh_quota_update(host: str, name: str, address: str, iphone: str) -> str:
         (
             f"nohup "
             f"lfs setquota -u {name} -b {iphone} -B {iphone} {address}; "
-            f"bash /root/app/vue3/lustre_one_user.sh {name} {address} "
+            f"bash /root/app/vue3/lustre_setquota_user.sh {name} {address} "
             f"> /tmp/lustre_quota_{name}.log 2>&1 & "
             f"exit 0"
         )

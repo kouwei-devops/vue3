@@ -22,9 +22,9 @@ build:
     - docker
   script:
     - which docker
-    - docker build -t python -f dockerfile1 .
+    - docker build -t python -f Dockerfile.backend .
     - docker tag python harbor.phadcloud.local/lustre/python:latest
-    - docker build -t vue3 -f dockerfile2 .
+    - docker build -t vue3 -f Dockerfile.frontend .
     - docker tag vue3 harbor.phadcloud.local/lustre/vue3:latest
 push:
   only:
