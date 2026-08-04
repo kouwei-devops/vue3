@@ -4,64 +4,17 @@
       <div class="brand">
         <div class="brand-mark"></div>
         <div>
-          <p class="brand-title">Tianji Quota Console</p>
-          <p class="brand-subtitle">Vercel-inspired storage quota operations panel</p>
+          <p class="brand-title">天玑智算存储配额管理台</p>
+          <p class="brand-subtitle">生产运维 · 存储配额查询、维护与同步</p>
         </div>
       </div>
       <div class="top-actions">
         <button class="ghost-button" type="button" @click="refreshAll" :disabled="loading">刷新</button>
-        <button class="primary-button" type="button" @click="openCreateModal">新增记录</button>
       </div>
     </header>
 
     <main class="content-grid">
-      <section class="hero-card panel-card">
-        <span class="eyebrow">Operate / Monitor · storage quota management</span>
-        <h1>让你的配额后台像一个现代产品控制台。</h1>
-        <p class="hero-copy">
-          我按你现有后端接口来组织页面：集群切换、分页查询、新增、更新、删除、以及 Lustre 配额同步都保留，
-          但页面信息结构、层级、留白和交互关系改成更贴近 Vercel 风格的白底控制台。
-        </p>
-        <div class="hero-badges">
-          <span class="badge">GET /api/selectPage</span>
-          <span class="badge">POST /api/add</span>
-          <span class="badge">PUT /api/update</span>
-          <span class="badge">DELETE /api/delete/:id</span>
-          <span class="badge">POST /api/lustre/quota/update</span>
-        </div>
-      </section>
-
-      <section class="panel-card side-card">
-        <div class="side-card-header">
-          <div>
-            <p class="eyebrow">Runtime</p>
-            <h2>当前接入</h2>
-          </div>
-          <span class="status-dot" :class="loading ? 'is-loading' : 'is-ready'"></span>
-        </div>
-        <dl class="runtime-list">
-          <div>
-            <dt>API Base</dt>
-            <dd>{{ apiBase }}</dd>
-          </div>
-          <div>
-            <dt>Cluster</dt>
-            <dd>{{ clusterId }}</dd>
-          </div>
-          <div>
-            <dt>Records</dt>
-            <dd>{{ total }}</dd>
-          </div>
-          <div>
-            <dt>Search</dt>
-            <dd>{{ keyword || '—' }}</dd>
-          </div>
-        </dl>
-        <p class="runtime-footnote">
-          Demo 数据库跑起来后，这里会直接展示真实 API 返回的数据，不再走纯静态样板。
-        </p>
-      </section>
-
+      <!-- 筛选与集群切换区：先确定范围，再执行查询。 -->
       <section class="toolbar-card panel-card full-width">
         <div class="cluster-switcher">
           <button
@@ -85,39 +38,16 @@
           <button class="ghost-button" type="button" @click="refreshAll" :disabled="loading">查询</button>
           <button class="ghost-button" type="button" @click="resetFilters" :disabled="loading">重置</button>
           <button class="ghost-button" type="button" @click="loadAllRows" :disabled="loading">查询所有用户</button>
-          <button class="primary-button" type="button" @click="openCreateModal">新增</button>
         </div>
       </section>
 
-      <section class="stats-grid full-width">
-        <article class="panel-card stat-card">
-          <span class="stat-label">Records</span>
-          <strong>{{ total }}</strong>
-          <p>当前集群与过滤条件下的用户记录总数。</p>
-        </article>
-        <article class="panel-card stat-card">
-          <span class="stat-label">Used Capacity</span>
-          <strong>{{ formatBytes(totalUsedBytes) }}</strong>
-          <p>基于当前查询结果聚合的已用容量。</p>
-        </article>
-        <article class="panel-card stat-card">
-          <span class="stat-label">Total Quota</span>
-          <strong>{{ formatBytes(totalQuotaBytes) }}</strong>
-          <p>当前查询结果聚合的总配额上限。</p>
-        </article>
-        <article class="panel-card stat-card">
-          <span class="stat-label">High Risk</span>
-          <strong>{{ highRiskCount }}</strong>
-          <p>使用率超过 80% 的账号数量。</p>
-        </article>
-      </section>
-
+      <!-- 主表格区：配额记录的查看、编辑、同步和删除都在这里。 -->
       <section class="panel-card table-card full-width">
         <div class="table-header">
           <div>
-            <span class="eyebrow">Storage records</span>
+            <span class="eyebrow">配额台账</span>
             <h2>配额记录</h2>
-            <p>保留你原来的业务动作，但把表格作为主角，让查询、编辑、同步、删除更有层级。</p>
+            <p>按集群维度维护用户配额信息，支持筛选查询、容量核对与配额同步。</p>
           </div>
           <div class="table-header-actions">
             <button class="ghost-button" type="button" @click="refreshAll" :disabled="loading">刷新列表</button>
@@ -126,8 +56,8 @@
 
         <div v-if="loading" class="table-state">正在加载数据…</div>
         <div v-else-if="rows.length === 0" class="table-state empty-state">
-          <h3>当前没有数据</h3>
-          <p>你可以切换集群、重置筛选，或先新增一条示例记录。</p>
+          <h3>当前无匹配记录</h3>
+          <p>可切换集群或调整筛选条件后重新查询。</p>
         </div>
         <div v-else class="table-wrapper">
           <table>
@@ -149,7 +79,7 @@
                 <td>
                   <div class="name-cell">
                     <strong>{{ row.name || '未命名用户' }}</strong>
-                    <small>{{ row.num || '0B' }} used · {{ row.iphone || '0B' }} quota</small>
+                    <small>{{ row.num || '0B' }} 已用 · {{ row.iphone || '0B' }} 配额</small>
                   </div>
                 </td>
                 <td><code>{{ row.address || '—' }}</code></td>
@@ -202,7 +132,7 @@
       <section class="modal-card">
         <div class="modal-header">
           <div>
-            <span class="eyebrow">{{ form.id ? 'Edit record' : 'Create record' }}</span>
+            <span class="eyebrow">{{ form.id ? '编辑记录' : '新增记录' }}</span>
             <h3>{{ form.id ? '编辑配额记录' : '新增配额记录' }}</h3>
           </div>
           <button class="icon-button" type="button" @click="closeModal">×</button>
@@ -249,20 +179,33 @@ import { computed, onMounted, reactive, ref } from 'vue'
 import axios from 'axios'
 import { ElMessage } from 'element-plus'
 
+// 后端接口基础地址，优先读取环境变量，未配置时默认指向本机 8000 端口。
 const apiBase = (import.meta.env.VITE_API_BASE || 'http://127.0.0.1:8000').replace(/\/$/, '')
+// 当前页面允许切换的集群列表。
 const clusters = ['8581', '9654']
 
+// 当前选中的集群 ID。
 const clusterId = ref('8581')
+// 顶部搜索框中的姓名关键字。
 const keyword = ref('')
+// 当前页码。
 const pageNum = ref(1)
+// 当前每页显示的记录数。
 const pageSize = ref(10)
+// 当前筛选条件下的总记录数。
 const total = ref(0)
+// 列表数据是否正在加载。
 const loading = ref(false)
+// 表单保存动作是否正在提交。
 const saving = ref(false)
+// 当前表格页展示的数据。
 const rows = ref([])
+// 用于汇总统计的完整数据集合。
 const summaryRows = ref([])
+// 编辑/新增弹窗是否可见。
 const dialogVisible = ref(false)
 
+// 弹窗表单的响应式数据对象。
 const form = reactive({
   id: null,
   num: '',
@@ -272,11 +215,16 @@ const form = reactive({
   cluster_id: '8581',
 })
 
+// 根据总数和每页条数计算总页数，至少为 1。
 const totalPages = computed(() => Math.max(1, Math.ceil(total.value / pageSize.value) || 1))
+// 汇总所有记录的已用容量总和，单位为字节。
 const totalUsedBytes = computed(() => summaryRows.value.reduce((sum, row) => sum + parseSize(row.num), 0))
+// 汇总所有记录的配额上限总和，单位为字节。
 const totalQuotaBytes = computed(() => summaryRows.value.reduce((sum, row) => sum + parseSize(row.iphone), 0))
+// 统计使用率达到或超过 80% 的记录数量。
 const highRiskCount = computed(() => summaryRows.value.filter((row) => usagePercent(row) >= 80).length)
 
+// 创建一个新的空表单对象，用于新增记录或重置弹窗表单。
 function createEmptyForm() {
   return {
     id: null,
@@ -288,10 +236,12 @@ function createEmptyForm() {
   }
 }
 
+// 用空表单对象覆盖当前表单，恢复为初始状态。
 function resetForm() {
   Object.assign(form, createEmptyForm())
 }
 
+// 把前端表单数据整理成后端接口需要的提交格式。
 function normalisePayload() {
   return {
     ...(form.id ? { id: Number(form.id) } : {}),
@@ -303,6 +253,7 @@ function normalisePayload() {
   }
 }
 
+// 把类似 12T、256G 这样的容量字符串转换成字节数，便于后续计算。
 function parseSize(value) {
   if (!value) return 0
   const text = String(value).trim()
@@ -314,6 +265,7 @@ function parseSize(value) {
   return number * 1024 ** (powerMap[unit] ?? 0)
 }
 
+// 把字节数转换回更适合展示的容量字符串，例如 1024 -> 1.0KB。
 function formatBytes(bytes) {
   if (!bytes) return '0B'
   const units = ['B', 'KB', 'MB', 'GB', 'TB', 'PB']
@@ -326,6 +278,7 @@ function formatBytes(bytes) {
   return `${value >= 100 ? value.toFixed(0) : value.toFixed(1)}${units[unitIndex]}`
 }
 
+// 计算当前记录的容量使用率百分比。
 function usagePercent(row) {
   const used = parseSize(row?.num)
   const quota = parseSize(row?.iphone)
@@ -333,10 +286,12 @@ function usagePercent(row) {
   return Math.round((used / quota) * 100)
 }
 
+// 计算进度条宽度，最大不超过 100%。
 function usageBarWidth(row) {
   return Math.min(100, usagePercent(row))
 }
 
+// 按当前筛选条件读取当前页的数据列表。
 async function fetchPage() {
   const response = await axios.get(`${apiBase}/api/selectPage`, {
     params: {
@@ -350,6 +305,7 @@ async function fetchPage() {
   total.value = Number(response.data.total || 0)
 }
 
+// 读取汇总计算需要的数据，用于统计总容量和高风险条目数。
 async function fetchSummaryRows() {
   const summaryPageSize = Math.max(total.value || pageSize.value, pageSize.value, 100)
   const response = await axios.get(`${apiBase}/api/selectPage`, {
@@ -363,6 +319,7 @@ async function fetchSummaryRows() {
   summaryRows.value = response.data.students || []
 }
 
+// 刷新页面需要的全部数据：先拿分页列表，再拿汇总数据。
 async function refreshAll() {
   loading.value = true
   try {
@@ -376,6 +333,7 @@ async function refreshAll() {
   }
 }
 
+// 把每页数量放大到足够展示全部记录，然后重新加载数据。
 async function loadAllRows() {
   if (total.value > 0) {
     pageNum.value = 1
@@ -387,6 +345,7 @@ async function loadAllRows() {
   await refreshAll()
 }
 
+// 切换当前集群，并回到第一页重新查询。
 function changeCluster(cluster) {
   if (clusterId.value === cluster) return
   clusterId.value = cluster
@@ -395,6 +354,7 @@ function changeCluster(cluster) {
   refreshAll()
 }
 
+// 清空搜索条件并恢复默认分页设置。
 function resetFilters() {
   keyword.value = ''
   pageNum.value = 1
@@ -402,28 +362,33 @@ function resetFilters() {
   refreshAll()
 }
 
+// 当每页条数变化时，回到第一页并重新查询。
 function handlePageSizeChange() {
   pageNum.value = 1
   refreshAll()
 }
 
+// 切换到上一页。
 function goPrevPage() {
   if (pageNum.value <= 1) return
   pageNum.value -= 1
   refreshAll()
 }
 
+// 切换到下一页。
 function goNextPage() {
   if (pageNum.value >= totalPages.value) return
   pageNum.value += 1
   refreshAll()
 }
 
+// 打开新增记录弹窗，并先清空表单内容。
 function openCreateModal() {
   resetForm()
   dialogVisible.value = true
 }
 
+// 打开编辑弹窗，并把当前行数据回填到表单中。
 function openEditModal(row) {
   Object.assign(form, {
     id: row.id,
@@ -436,11 +401,13 @@ function openEditModal(row) {
   dialogVisible.value = true
 }
 
+// 关闭弹窗，并顺手重置表单，避免下次打开残留旧数据。
 function closeModal() {
   dialogVisible.value = false
   resetForm()
 }
 
+// 保存当前表单：有 id 时更新记录，没有 id 时新增记录。
 async function saveRecord() {
   saving.value = true
   try {
@@ -462,6 +429,7 @@ async function saveRecord() {
   }
 }
 
+// 删除一条记录；删除成功后根据当前页情况决定是否回退页码。
 async function removeRow(row) {
   if (!window.confirm(`确认删除 ${row.name || row.id} 这条记录吗？`)) return
   try {
@@ -477,6 +445,7 @@ async function removeRow(row) {
   }
 }
 
+// 调用后端接口，把当前记录的配额信息同步到 Lustre。
 async function syncQuota(row) {
   if (!window.confirm(`确认同步 ${row.name} 的 Lustre 配额吗？`)) return
   try {
@@ -493,6 +462,7 @@ async function syncQuota(row) {
   }
 }
 
+// 页面首次挂载时自动加载数据。
 onMounted(() => {
   refreshAll()
 })
