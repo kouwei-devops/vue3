@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quota Console Style Lab</title>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f7f8fb;
+      --panel: #ffffff;
+      --text: #171717;
+      --muted: #61656c;
+      --line: rgba(0,0,0,.08);
+      --blue: #0a72ef;
+      --violet: #5e6ad2;
+      --neon: #faff69;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Geist', system-ui, sans-serif;
+      background: radial-gradient(circle at top, rgba(10,114,239,.08), transparent 34%), var(--bg);
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+    .shell { width: min(1320px, calc(100vw - 32px)); margin: 0 auto; padding: 28px 0 40px; }
+    .hero {
+      background: rgba(255,255,255,.82);
+      backdrop-filter: blur(18px) saturate(160%);
+      border-radius: 24px;
+      padding: 28px;
+      box-shadow: rgba(0,0,0,.08) 0 0 0 1px, rgba(0,0,0,.05) 0 18px 50px -30px;
+      margin-bottom: 20px;
+    }
+    .eyebrow { display:inline-flex; align-items:center; gap:8px; padding: 0 10px; min-height: 28px; border-radius: 999px; background:#ebf5ff; color:#0068d6; font-size:12px; font-weight:600; }
+    h1 { margin: 14px 0 8px; font-size: clamp(34px, 5vw, 54px); line-height: 1.02; letter-spacing: -2px; }
+    .lead { max-width: 80ch; color: var(--muted); font-size: 18px; line-height: 1.7; }
+    .summary { display:grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 22px; }
+    .summary-card { background: var(--panel); border-radius: 18px; padding: 18px; box-shadow: rgba(0,0,0,.08) 0 0 0 1px, rgba(0,0,0,.04) 0 2px 2px; }
+    .summary-card span { display:block; font-size:12px; color: var(--muted); margin-bottom: 8px; }
+    .summary-card strong { display:block; font-size: 24px; letter-spacing: -.8px; margin-bottom: 8px; }
+    .summary-card p { margin: 0; color: var(--muted); line-height: 1.6; }
+    .grid { display:grid; gap: 20px; }
+    .demo-card { background: var(--panel); border-radius: 24px; padding: 22px; box-shadow: rgba(0,0,0,.08) 0 0 0 1px, rgba(0,0,0,.05) 0 18px 50px -30px; }
+    .demo-head { display:flex; justify-content:space-between; gap:16px; align-items:flex-start; margin-bottom: 16px; }
+    .demo-head h2 { margin: 6px 0 8px; font-size: 30px; letter-spacing: -1px; }
+    .demo-head p { margin: 0; max-width: 72ch; color: var(--muted); line-height: 1.65; }
+    .rank { display:inline-flex; min-width: 92px; justify-content:center; padding: 8px 12px; border-radius: 999px; font-size: 12px; font-weight: 700; }
+    .rank.best { background: rgba(94,106,210,.12); color: #4f5bc5; }
+    .rank.good { background: rgba(10,114,239,.1); color: #0068d6; }
+    .rank.bold { background: rgba(250,255,105,.18); color: #4c5000; }
+    .meta { display:flex; flex-wrap:wrap; gap: 10px; margin-top: 12px; }
+    .pill { padding: 6px 10px; border-radius: 999px; font-size: 12px; color: var(--muted); box-shadow: inset 0 0 0 1px var(--line); }
+    iframe { width: 100%; height: 640px; border: none; border-radius: 18px; box-shadow: inset 0 0 0 1px rgba(0,0,0,.08); background: #fff; }
+    .actions { display:flex; gap: 10px; flex-wrap: wrap; margin-top: 16px; }
+    .btn { text-decoration:none; display:inline-flex; align-items:center; justify-content:center; min-height:40px; padding: 0 14px; border-radius: 10px; font-size: 14px; font-weight: 500; }
+    .btn.dark { background:#171717; color:#fff; }
+    .btn.ghost { background:#fff; color:#171717; box-shadow: rgba(0,0,0,.08) 0 0 0 1px; }
+    @media (max-width: 900px) {
+      .summary { grid-template-columns: 1fr; }
+      .demo-head { flex-direction: column; }
+      iframe { height: 520px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <section class="hero">
+      <span class="eyebrow">Quota Console Style Lab</span>
+      <h1>给你的配额管理前端做了 3 套样板 DEMO。</h1>
+      <p class="lead">
+        我根据你当前前端的真实结构（集群切换、筛选、表格、分页、编辑弹窗）做了 3 套更适合「存储配额 / 集群管理」场景的视觉样板，分别偏向：
+        开发者控制台、极简企业后台、以及基础设施监控驾驶舱。
+      </p>
+      <div class="summary">
+        <article class="summary-card">
+          <span>我最推荐</span>
+          <strong>Linear 风格</strong>
+          <p>最贴合你现在这个界面的本质：Operate + Monitor。适合运维、配额、集群、多动作表格的开发者后台。</p>
+        </article>
+        <article class="summary-card">
+          <span>最稳妥</span>
+          <strong>Vercel 风格</strong>
+          <p>更干净、更轻、更企业化。适合想把这套工具做得像现代 SaaS 控制台，但不会很“机房味”。</p>
+        </article>
+        <article class="summary-card">
+          <span>最有基础设施气质</span>
+          <strong>ClickHouse 风格</strong>
+          <p>黑底、高对比、偏监控驾驶舱。适合更强调 HPC / infra / 性能与容量的场景，但风险是更强烈。</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="grid">
+      <article class="demo-card">
+        <div class="demo-head">
+          <div>
+            <span class="rank best">推荐 No.1</span>
+            <h2>Linear · 开发者控制台</h2>
+            <p>如果你想让这个页面看起来像真正的内部工具 / 运维控制台，而不是普通 Element 页面，这是最适合的一套。深色面板、精确边线、单一强调色，对“切集群 + 查用户 + 表格操作”非常友好。</p>
+            <div class="meta">
+              <span class="pill">适配度：高</span>
+              <span class="pill">场景：运维 / 配额管理 / 多动作表格</span>
+              <span class="pill">气质：开发者工具 / 冷静精密</span>
+            </div>
+          </div>
+          <div class="actions">
+            <a class="btn dark" href="./linear.html" target="_blank">单独打开</a>
+          </div>
+        </div>
+        <iframe src="./linear.html" title="Linear demo"></iframe>
+      </article>
+
+      <article class="demo-card">
+        <div class="demo-head">
+          <div>
+            <span class="rank good">备选 No.2</span>
+            <h2>Vercel · 极简白底控制台</h2>
+            <p>如果你更想要整洁、克制、白底、现代企业工具感，这套更稳。它不会像传统后台那样重，也不会像监控驾驶舱那样强烈，适合做“更产品化”的控制台。</p>
+            <div class="meta">
+              <span class="pill">适配度：中高</span>
+              <span class="pill">场景：现代企业后台 / 轻控制台</span>
+              <span class="pill">气质：白底精致 / 很产品化</span>
+            </div>
+          </div>
+          <div class="actions">
+            <a class="btn dark" href="./vercel.html" target="_blank">单独打开</a>
+          </div>
+        </div>
+        <iframe src="./vercel.html" title="Vercel demo"></iframe>
+      </article>
+
+      <article class="demo-card">
+        <div class="demo-head">
+          <div>
+            <span class="rank bold">风格更强</span>
+            <h2>ClickHouse · Infra 驾驶舱</h2>
+            <p>这套最有“基础设施 / HPC / 容量系统”的味道。黑底、荧光强调、性能感强，比较适合做容量监控或运维 cockpit，但如果做得太满，会压过日常管理操作的可读性。</p>
+            <div class="meta">
+              <span class="pill">适配度：中</span>
+              <span class="pill">场景：监控 / Cockpit / Infra 展示</span>
+              <span class="pill">气质：强性能感 / 高对比</span>
+            </div>
+          </div>
+          <div class="actions">
+            <a class="btn dark" href="./clickhouse.html" target="_blank">单独打开</a>
+          </div>
+        </div>
+        <iframe src="./clickhouse.html" title="ClickHouse demo"></iframe>
+      </article>
+    </section>
+  </div>
+</body>
+</html>

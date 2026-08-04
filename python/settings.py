@@ -1,31 +1,36 @@
 # config.py - Tortoise-ORM配置文件
-from tortoise import Tortoise
-from tortoise.contrib.fastapi import register_tortoise
+import os
 
-# 数据库配置字典
+
+# 读取整数类型环境变量；如果为空或格式错误，就回退到默认值。
+def _int_env(name: str, default: int) -> int:
+    try:
+        return int(os.getenv(name, default))
+    except (TypeError, ValueError):
+        return default
+
+
+# Tortoise ORM 的数据库连接与模型注册配置。
 TORTOISE_ORM_CONFIG = {
     "connections": {
         "default": {
-            # MySQL配置（根据您的表结构推荐）
             "engine": "tortoise.backends.mysql",
             "credentials": {
-                "host": "192.168.2.250",      # 数据库主机
-                "port": 3306,            # 数据库端口
-                "user": "root",          # 用户名
-                "password": "1234",  # 密码
-                "database": "fastapi",# 数据库名
-                "charset": "utf8mb4",    # 字符集
+                "host": os.getenv("DB_HOST", "testmysql"),
+                "port": _int_env("DB_PORT", 3306),
+                "user": os.getenv("DB_USER", "root"),
+                "password": os.getenv("DB_PASSWORD", "1234"),
+                "database": os.getenv("DB_NAME", "fastapi"),
+                "charset": os.getenv("DB_CHARSET", "utf8mb4"),
             },
         }
     },
     "apps": {
         "models": {
-            "models": [
-                "models",      # 学生模型文件路径       # 数据库迁移工具（可选）
-            ],
+            "models": ["models"],
             "default_connection": "default",
         }
     },
-    "use_tz": False,                    # 是否使用时区
-    "timezone": "Asia/Shanghai",        # 时区设置
+    "use_tz": False,
+    "timezone": os.getenv("APP_TIMEZONE", "Asia/Shanghai"),
 }

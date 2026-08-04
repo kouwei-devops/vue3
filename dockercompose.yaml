@@ -1,0 +1,38 @@
+version: "3.9"
+
+services:
+  python:
+    image: python
+    container_name: fastapi
+    working_dir: /app
+    ports:
+      - "8000:8000"
+    volumes:
+    - ~/.ssh:/app/ssh
+    - /etc/hosts:/etc/hosts
+    command: >
+      uvicorn main:app --reload --host 0.0.0.0 --port 8000
+
+  mysql:
+    image: swr.cn-north-4.myhuaweicloud.com/ddn-k8s/docker.io/mysql:8.0.43
+    container_name: mysql_vue3
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 1234   # 修改为你自己的root密码
+      MYSQL_DATABASE: mydatabase          # 初始化数据库名，可修改
+      MYSQL_USER: user                    # 新建用户，可修改
+      MYSQL_PASSWORD: userpassword        # 新建用户密码，可修改
+    ports:
+      - "3306:3306"                       # 将容器3306端口映射到主机
+    volumes:
+      - /root/app/mysql_data:/var/lib/mysql       # 数据持久化到当前目录
+
+
+  vue3-frontend:
+    image: vue3       # 你刚构建的生产镜像（dist + nginx）
+    container_name: vue3
+    ports:
+      - "8081:80"
+    depends_on:
+      - python
+    restart: unless-stopped

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ClickHouse Style Demo</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #000000;
+      --text: #ffffff;
+      --muted: #a0a0a0;
+      --line: rgba(65,65,65,.8);
+      --panel: #101010;
+      --neon: #faff69;
+      --green: #166534;
+      --red: #ff6b6b;
+      --olive: #4f5100;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    .app { width: min(1280px, calc(100vw - 28px)); margin: 0 auto; padding: 18px 0 28px; }
+    .top { display:flex; justify-content:space-between; align-items:center; gap:16px; padding: 14px 0 18px; border-bottom: 1px solid var(--line); margin-bottom: 18px; }
+    .brand strong { display:block; font-size: 15px; font-weight: 700; }
+    .brand span { display:block; color: var(--muted); font-size: 12px; margin-top: 4px; letter-spacing: 1px; text-transform: uppercase; }
+    .actions { display:flex; gap:10px; flex-wrap:wrap; }
+    .btn, .btn-green, .btn-neon { min-height: 38px; padding: 0 14px; border-radius: 6px; border: 1px solid var(--line); display:inline-flex; align-items:center; justify-content:center; font-size: 14px; text-decoration:none; }
+    .btn { color:#fff; background:#141414; }
+    .btn-green { color:#fff; background: var(--green); }
+    .btn-neon { color:#151515; background: var(--neon); border-color: var(--neon); font-weight: 700; }
+    .hero { display:grid; grid-template-columns: 1.15fr .85fr; gap: 18px; margin-bottom: 18px; }
+    .card { background: #0b0b0b; border: 1px solid var(--line); border-radius: 10px; padding: 20px; }
+    .eyebrow { color: var(--muted); font-size: 12px; letter-spacing: 1.4px; text-transform: uppercase; }
+    h1 { margin: 14px 0 0; font-size: clamp(42px, 7vw, 78px); line-height: .95; font-weight: 900; }
+    .lead { margin: 16px 0 0; color: var(--muted); font-size: 17px; line-height: 1.7; max-width: 52ch; }
+    .hero-metrics { display:grid; grid-template-columns: repeat(2,1fr); gap: 12px; }
+    .metric { background:#0d0d0d; border: 1px solid var(--line); border-radius: 8px; padding: 16px; }
+    .metric span { color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: 1.2px; }
+    .metric strong { display:block; margin-top: 8px; font-size: 42px; font-weight: 900; line-height: 1; }
+    .metric p { margin: 10px 0 0; color: var(--muted); font-size: 13px; line-height: 1.6; }
+    .toolbar { display:grid; grid-template-columns: auto auto 1fr auto auto auto; gap: 10px; align-items:center; margin-bottom: 18px; }
+    .seg, .input { min-height: 38px; border-radius: 6px; border: 1px solid var(--line); background: #141414; display:flex; align-items:center; }
+    .seg { padding: 0 12px; color: #fff; }
+    .seg.active { border-color: var(--neon); color: var(--neon); }
+    .input { padding: 0 14px; color: var(--muted); }
+    .layout { display:grid; grid-template-columns: 1fr 300px; gap: 18px; }
+    .section-head { display:flex; align-items:flex-end; justify-content:space-between; gap:12px; margin-bottom: 14px; }
+    .section-head h2 { margin: 8px 0 0; font-size: 30px; font-weight: 700; }
+    .section-head p { margin: 8px 0 0; color: var(--muted); line-height: 1.7; }
+    table { width:100%; border-collapse: collapse; }
+    th, td { text-align:left; padding: 14px 10px; border-bottom: 1px solid rgba(65,65,65,.45); vertical-align: middle; }
+    th { color: var(--muted); font-size: 12px; letter-spacing: 1px; text-transform: uppercase; }
+    td { font-size: 14px; }
+    .name { display:grid; gap:4px; }
+    .name strong { font-size:14px; font-weight:700; }
+    .name small, .mono { color: var(--muted); }
+    .mono { font-family:'JetBrains Mono', ui-monospace, monospace; font-size: 12px; }
+    .tag { display:inline-flex; align-items:center; justify-content:center; min-height:24px; padding:0 10px; border-radius:999px; border:1px solid var(--olive); color: var(--neon); font-size: 12px; }
+    .progress { display:grid; gap:8px; min-width:120px; }
+    .track { height:8px; background:#1a1a1a; border-radius:999px; overflow:hidden; border:1px solid #1d1d1d; }
+    .bar { height:100%; background: linear-gradient(90deg, #faff69, #ffe563); border-radius: inherit; }
+    .row-actions { display:flex; gap: 10px; flex-wrap:wrap; }
+    .link { color: var(--neon); text-decoration:none; font-size: 13px; }
+    .link.red { color: var(--red); }
+    .stack { display:grid; gap: 16px; }
+    .callout { border: 1px solid var(--line); border-radius: 8px; padding: 14px; }
+    .callout strong { display:block; font-size: 14px; }
+    .callout p { margin: 8px 0 0; color: var(--muted); font-size: 13px; line-height: 1.6; }
+    @media (max-width: 1020px) {
+      .hero, .layout { grid-template-columns: 1fr; }
+      .toolbar { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="top">
+      <div class="brand"><strong>HPC Quota Cockpit</strong><span>ClickHouse-inspired infra surface</span></div>
+      <div class="actions"><span class="btn">刷新</span><span class="btn-green">批量同步</span><span class="btn-neon">新增记录</span></div>
+    </div>
+
+    <section class="hero">
+      <article class="card">
+        <div class="eyebrow">capacity / quota / cluster / risk</div>
+        <h1>让配额控制台像一台基础设施驾驶舱。</h1>
+        <p class="lead">如果你想突出 HPC、容量、性能和系统气质，这套最带感。它把存储配额页面做得像面向 infra 团队的 cockpit，而不是普通业务后台。</p>
+      </article>
+      <article class="hero-metrics">
+        <div class="metric"><span>Total accounts</span><strong>248</strong><p>当前集群 8581 的活跃配额主体。</p></div>
+        <div class="metric"><span>Used</span><strong>612T</strong><p>已用容量，适合做趋势图。</p></div>
+        <div class="metric"><span>Over threshold</span><strong>17</strong><p>超过 80% 的高风险账号。</p></div>
+        <div class="metric"><span>Pending sync</span><strong>3</strong><p>待写入 Lustre 的额度变更。</p></div>
+      </article>
+    </section>
+
+    <section class="toolbar">
+      <span class="seg active">8581</span>
+      <span class="seg">9654</span>
+      <span class="input">按姓名搜索，例如 wang / liu / sun</span>
+      <span class="btn">查询</span>
+      <span class="btn">重置</span>
+      <span class="btn-neon">查询所有</span>
+    </section>
+
+    <section class="layout">
+      <article class="card">
+        <div class="section-head">
+          <div>
+            <div class="eyebrow">records / capacity / action</div>
+            <h2>配额记录</h2>
+            <p>这套的优势是“系统味”非常强，适合强调容量与告警；劣势是如果日常编辑操作很多，视觉会比 Linear 更重。</p>
+          </div>
+          <span class="btn">刷新列表</span>
+        </div>
+        <table>
+          <thead>
+            <tr><th>ID</th><th>姓名</th><th>路径</th><th>已用</th><th>配额</th><th>集群</th><th>使用率</th><th>操作</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>2031</td>
+              <td><div class="name"><strong>liuyang</strong><small>standard quota bucket</small></div></td>
+              <td class="mono">/lustre/home/liuyang</td><td>12.6T</td><td>16T</td><td><span class="tag">8581</span></td>
+              <td><div class="progress"><span>79%</span><div class="track"><div class="bar" style="width:79%"></div></div></div></td>
+              <td><div class="row-actions"><a class="link" href="#">编辑</a><a class="link" href="#">同步</a></div></td>
+            </tr>
+            <tr>
+              <td>2028</td>
+              <td><div class="name"><strong>wangdi</strong><small>checkpoint overflow risk</small></div></td>
+              <td class="mono">/lustre/project/wangdi</td><td>18.4T</td><td>20T</td><td><span class="tag">8581</span></td>
+              <td><div class="progress"><span>92%</span><div class="track"><div class="bar" style="width:92%"></div></div></div></td>
+              <td><div class="row-actions"><a class="link" href="#">告警</a><a class="link red" href="#">删除</a></div></td>
+            </tr>
+            <tr>
+              <td>1986</td>
+              <td><div class="name"><strong>chenrui</strong><small>shared scratch volume</small></div></td>
+              <td class="mono">/lustre/share/chenrui</td><td>4.1T</td><td>12T</td><td><span class="tag">8581</span></td>
+              <td><div class="progress"><span>34%</span><div class="track"><div class="bar" style="width:34%"></div></div></div></td>
+              <td><div class="row-actions"><a class="link" href="#">编辑</a><a class="link" href="#">历史</a></div></td>
+            </tr>
+            <tr>
+              <td>1979</td>
+              <td><div class="name"><strong>sunmo</strong><small>archive retention hotspot</small></div></td>
+              <td class="mono">/lustre/archive/sunmo</td><td>29.0T</td><td>32T</td><td><span class="tag">8581</span></td>
+              <td><div class="progress"><span>91%</span><div class="track"><div class="bar" style="width:91%"></div></div></div></td>
+              <td><div class="row-actions"><a class="link" href="#">扩容</a><a class="link red" href="#">删除</a></div></td>
+            </tr>
+          </tbody>
+        </table>
+      </article>
+
+      <aside class="stack">
+        <article class="card callout"><strong>超限高亮</strong><p>这类风格非常适合把 80%+、90%+ 的风险用户做成明显高对比警示。</p></article>
+        <article class="card callout"><strong>集群视图</strong><p>也适合加节点级存储池、Metadata 延迟、同步 worker 状态等 infra 指标。</p></article>
+        <article class="card callout"><strong>使用建议</strong><p>适合当作“大盘 / cockpit”，但如果作为每天频繁编辑的主界面，可能有点过强。</p></article>
+      </aside>
+    </section>
+  </div>
+</body>
+</html>

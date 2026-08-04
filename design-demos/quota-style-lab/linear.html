@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Linear Style Demo</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #08090a;
+      --panel: #111214;
+      --panel-2: #17181c;
+      --surface: rgba(255,255,255,.03);
+      --line: rgba(255,255,255,.08);
+      --line-soft: rgba(255,255,255,.05);
+      --text: #f7f8f8;
+      --muted: #8a8f98;
+      --subtle: #62666d;
+      --brand: #5e6ad2;
+      --brand-2: #7170ff;
+      --ok: #10b981;
+      --warn: #f59e0b;
+      --danger: #ef4444;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Inter', system-ui, sans-serif;
+      background:
+        radial-gradient(circle at top, rgba(113,112,255,.16), rgba(113,112,255,0) 28%),
+        var(--bg);
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+    .app { width: min(1240px, calc(100vw - 32px)); margin: 0 auto; padding: 20px 0 28px; }
+    .topbar {
+      display:flex; align-items:center; justify-content:space-between; gap:18px;
+      padding: 16px 18px; border-radius: 16px;
+      background: rgba(255,255,255,.02); border: 1px solid var(--line-soft);
+      box-shadow: rgba(0,0,0,.25) 0 20px 40px -32px;
+      margin-bottom: 18px;
+    }
+    .brand { display:flex; align-items:center; gap:12px; }
+    .brand-mark { width: 12px; height: 12px; border-radius: 50%; background: linear-gradient(180deg, var(--brand-2), #858fff); box-shadow: 0 0 18px rgba(113,112,255,.55); }
+    .brand strong { display:block; font-size: 15px; font-weight: 510; }
+    .brand span { display:block; color: var(--subtle); font-size: 12px; margin-top: 2px; }
+    .top-actions { display:flex; gap: 10px; flex-wrap:wrap; }
+    .chip, .button, .ghost, .danger, .seg {
+      min-height: 36px; padding: 0 12px; border-radius: 10px; border: 1px solid var(--line); background: rgba(255,255,255,.02); color: var(--text);
+      font-size: 13px; font-weight: 500; text-decoration:none; display:inline-flex; align-items:center; justify-content:center;
+    }
+    .button { background: var(--brand); border-color: transparent; }
+    .ghost { color: #d0d6e0; }
+    .danger { color: #ff9a9a; }
+    .hero {
+      display:grid; grid-template-columns: 1.2fr .8fr; gap: 18px; margin-bottom: 18px;
+    }
+    .panel {
+      background: rgba(255,255,255,.02); border: 1px solid var(--line-soft); border-radius: 20px; padding: 20px;
+      box-shadow: rgba(0,0,0,.22) 0 0 0 1px, rgba(0,0,0,.45) 0 28px 60px -40px;
+    }
+    .eyebrow { color: var(--subtle); font-size: 12px; margin-bottom: 10px; }
+    h1 { margin: 0; font-size: clamp(34px, 5vw, 52px); line-height: 1; letter-spacing: -1px; font-weight: 510; }
+    .lead { margin: 14px 0 0; max-width: 52ch; color: var(--muted); line-height: 1.7; font-size: 16px; }
+    .stats { display:grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .stat { background: rgba(255,255,255,.025); border: 1px solid var(--line-soft); border-radius: 16px; padding: 16px; }
+    .stat span { color: var(--subtle); font-size: 12px; display:block; }
+    .stat strong { display:block; margin-top: 10px; font-size: 28px; letter-spacing: -.6px; font-weight: 590; }
+    .stat p { margin: 8px 0 0; color: var(--muted); font-size: 13px; line-height: 1.6; }
+    .toolbar { display:grid; grid-template-columns: 1fr auto auto auto auto; gap: 10px; align-items:center; margin: 0 0 18px; }
+    .search { min-height: 40px; border-radius: 10px; border: 1px solid var(--line); background: rgba(255,255,255,.02); color: var(--text); padding: 0 14px; }
+    .clusters { display:flex; gap: 8px; }
+    .seg { background: transparent; color: #d0d6e0; border-color: #23252a; border-radius: 999px; }
+    .seg.active { background: rgba(113,112,255,.18); color: #f7f8f8; border-color: rgba(113,112,255,.3); }
+    .layout { display:grid; grid-template-columns: 1fr 320px; gap: 18px; }
+    .section-head { display:flex; align-items:flex-end; justify-content:space-between; gap: 14px; margin-bottom: 16px; }
+    .section-head h2 { margin: 6px 0 0; font-size: 24px; letter-spacing: -.3px; font-weight: 590; }
+    .section-head p { margin: 8px 0 0; color: var(--muted); font-size: 14px; line-height: 1.7; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { text-align: left; padding: 14px 10px; border-bottom: 1px solid var(--line-soft); }
+    th { color: var(--subtle); font-size: 12px; font-weight: 510; }
+    td { font-size: 14px; color: #e8eaee; }
+    .mono { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 12px; color: #a0a6b1; }
+    .name { display:grid; gap: 4px; }
+    .name strong { font-size: 14px; font-weight: 510; }
+    .name small { color: var(--subtle); }
+    .tag { display:inline-flex; align-items:center; justify-content:center; min-height: 24px; padding: 0 10px; border-radius: 999px; background: rgba(16,185,129,.12); color: #7de4b8; font-size: 12px; border: 1px solid rgba(16,185,129,.18); }
+    .progress { display:grid; gap: 8px; min-width: 120px; }
+    .track { height: 7px; border-radius: 999px; background: rgba(255,255,255,.06); overflow: hidden; }
+    .bar { height: 100%; background: linear-gradient(90deg, var(--brand), #8f9bff); border-radius: inherit; }
+    .row-actions { display:flex; gap: 8px; flex-wrap:wrap; }
+    .side-stack { display:grid; gap: 16px; }
+    .timeline { display:grid; gap: 12px; }
+    .item { padding: 14px; border-radius: 14px; border: 1px solid var(--line-soft); background: rgba(255,255,255,.02); }
+    .item strong { display:block; font-size: 14px; }
+    .item span { display:block; margin-top: 6px; color: var(--muted); font-size: 13px; line-height: 1.6; }
+    .item code { color: #b9c0cc; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 12px; }
+    .health { display:grid; gap: 10px; }
+    .health-row { display:flex; justify-content:space-between; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--line-soft); color: #d0d6e0; font-size: 14px; }
+    .ok { color: #7de4b8; }
+    .warn { color: #fbbf24; }
+    @media (max-width: 1020px) {
+      .hero, .layout { grid-template-columns: 1fr; }
+      .toolbar { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="topbar">
+      <div class="brand">
+        <span class="brand-mark"></span>
+        <div>
+          <strong>Tianji Quota Console</strong>
+          <span>Linear-inspired operations surface</span>
+        </div>
+      </div>
+      <div class="top-actions">
+        <span class="chip">Live cluster · 8581</span>
+        <a class="ghost" href="#">批量同步</a>
+        <a class="button" href="#">新增配额记录</a>
+      </div>
+    </div>
+
+    <section class="hero">
+      <article class="panel">
+        <div class="eyebrow">Operate surface · 配额 / 用户 / 集群 / 变更动作</div>
+        <h1>把配额管理做成真正的开发者控制台。</h1>
+        <p class="lead">这套最适合你现在这个页面：切换集群、搜索用户、查容量、编辑配额、触发同步，全都属于高频内部工具动作。Linear 风格的强项就是让复杂动作显得克制、冷静、精密。</p>
+      </article>
+      <article class="panel stats">
+        <div class="stat"><span>Records</span><strong>248</strong><p>当前集群 8581 下的用户记录数。</p></div>
+        <div class="stat"><span>Used / Quota</span><strong>612T / 900T</strong><p>汇总视角比大标题更重要。</p></div>
+        <div class="stat"><span>Over 80%</span><strong>17</strong><p>高风险配额账户，建议重点检查。</p></div>
+        <div class="stat"><span>Sync queue</span><strong>3 pending</strong><p>待下发到 Lustre 的变更任务。</p></div>
+      </article>
+    </section>
+
+    <div class="panel" style="margin-bottom:18px;">
+      <div class="toolbar">
+        <input class="search" value="liu" />
+        <div class="clusters">
+          <span class="seg active">8581</span>
+          <span class="seg">9654</span>
+        </div>
+        <span class="ghost">查询</span>
+        <span class="ghost">重置</span>
+        <span class="button">查询所有用户</span>
+      </div>
+    </div>
+
+    <section class="layout">
+      <article class="panel">
+        <div class="section-head">
+          <div>
+            <div class="eyebrow">Storage records</div>
+            <h2>配额记录</h2>
+            <p>表格是主角，顶部说明退后。每一行都应该支持快速阅读、快速判断、快速触发动作。</p>
+          </div>
+          <span class="ghost">刷新列表</span>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th><th>姓名</th><th>家目录</th><th>已用</th><th>配额</th><th>集群</th><th>使用率</th><th>操作</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>2031</td>
+              <td><div class="name"><strong>liuyang</strong><small>quota profile · standard</small></div></td>
+              <td class="mono">/lustre/home/liuyang</td>
+              <td>12.6T</td><td>16T</td><td><span class="tag">8581</span></td>
+              <td><div class="progress"><span>79%</span><div class="track"><div class="bar" style="width:79%"></div></div></div></td>
+              <td><div class="row-actions"><span class="ghost">编辑</span><span class="ghost">同步配额</span></div></td>
+            </tr>
+            <tr>
+              <td>2028</td>
+              <td><div class="name"><strong>wangdi</strong><small>gpu project workspace</small></div></td>
+              <td class="mono">/lustre/project/wangdi</td>
+              <td>18.4T</td><td>20T</td><td><span class="tag">8581</span></td>
+              <td><div class="progress"><span>92%</span><div class="track"><div class="bar" style="width:92%"></div></div></div></td>
+              <td><div class="row-actions"><span class="ghost">编辑</span><span class="danger">限额告警</span></div></td>
+            </tr>
+            <tr>
+              <td>1986</td>
+              <td><div class="name"><strong>chenrui</strong><small>bio workflow scratch</small></div></td>
+              <td class="mono">/lustre/share/chenrui</td>
+              <td>4.1T</td><td>12T</td><td><span class="tag">8581</span></td>
+              <td><div class="progress"><span>34%</span><div class="track"><div class="bar" style="width:34%"></div></div></div></td>
+              <td><div class="row-actions"><span class="ghost">编辑</span><span class="ghost">历史</span></div></td>
+            </tr>
+            <tr>
+              <td>1979</td>
+              <td><div class="name"><strong>sunmo</strong><small>large checkpoint archive</small></div></td>
+              <td class="mono">/lustre/archive/sunmo</td>
+              <td>29.0T</td><td>32T</td><td><span class="tag">8581</span></td>
+              <td><div class="progress"><span>91%</span><div class="track"><div class="bar" style="width:91%"></div></div></div></td>
+              <td><div class="row-actions"><span class="ghost">编辑</span><span class="danger">删除</span></div></td>
+            </tr>
+          </tbody>
+        </table>
+      </article>
+
+      <aside class="side-stack">
+        <article class="panel">
+          <div class="eyebrow">Recent API actions</div>
+          <div class="timeline">
+            <div class="item"><strong>POST /api/lustre/quota/update</strong><span>liuyang 配额从 14T 调整到 16T，等待远端节点下发。</span></div>
+            <div class="item"><strong>GET /api/selectPage</strong><span>最近查询带 <code>cluster_id=8581</code> 与 <code>name=liu</code> 条件。</span></div>
+            <div class="item"><strong>DELETE /api/delete/1979</strong><span>建议危险动作独立成红色次级入口，而不是和普通编辑完全同权。</span></div>
+          </div>
+        </article>
+
+        <article class="panel">
+          <div class="eyebrow">Cluster health</div>
+          <div class="health">
+            <div class="health-row"><span>Metadata service</span><strong class="ok">healthy</strong></div>
+            <div class="health-row"><span>Quota sync worker</span><strong class="warn">3 pending</strong></div>
+            <div class="health-row"><span>API latency</span><strong>82ms</strong></div>
+            <div class="health-row"><span>Daily change window</span><strong>22:00-23:00</strong></div>
+          </div>
+        </article>
+      </aside>
+    </section>
+  </div>
+</body>
+</html>

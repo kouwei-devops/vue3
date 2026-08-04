@@ -1,0 +1,50 @@
+
+stages:
+  - build
+  - push
+  - kubapply
+
+variables:
+  DOCKER_TLS_CERTDIR: ""   # 必须关掉，不然 docker 会走 dind
+  IMAGE_NAME: $CI_REGISTRY_IMAGE
+  IMAGE_TAG: $CI_COMMIT_SHORT_SHA
+  REGISTRY: 'harbor.phadcloud.local'
+  REGISTRY_USER: 'admin'
+  REGISTRY_PASSWORD: 'Harbor12345'
+
+before_script:
+  - docker version
+  - docker info
+
+build:
+  stage: build
+  tags :
+    - docker
+  script:
+    - which docker
+    - docker build -t python -f dockerfile1 .
+    - docker tag python harbor.phadcloud.local/lustre/python:latest
+    - docker build -t vue3 -f dockerfile2 .
+    - docker tag vue3 harbor.phadcloud.local/lustre/vue3:latest
+push:
+  only:
+    - branches
+  stage: push
+  tags :
+    - docker
+  script:
+    - echo "$REGISTRY_PASSWORD" | docker login $REGISTRY -u "$REGISTRY_USER" --password-stdin
+    - docker push harbor.phadcloud.local/lustre/python:latest
+    - docker push harbor.phadcloud.local/lustre/vue3:latest
+kubapply:
+  stage: kubapply
+  tags:
+    - k8s-ssh
+  script:
+    - cd /root/ansible/lustre
+    - rm -rf lustre-qouta
+    - git clone -b test http://gitlab.phadcloud.local/kouwei/lustre-qouta.git
+    - sleep 5
+    - cd lustre-qouta
+    - kubectl rollout restart deployment lustre-python-deployment -n lustre
+    - kubectl rollout restart deployment lustre-vue3-deployment -n lustre

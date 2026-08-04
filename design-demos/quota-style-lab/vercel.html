@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vercel Style Demo</title>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #ffffff;
+      --text: #171717;
+      --muted: #4d4d4d;
+      --line: rgba(0,0,0,.08);
+      --line-light: #ebebeb;
+      --subtle: #666;
+      --blue: #0a72ef;
+      --pink: #de1d8d;
+      --red: #ff5b4f;
+      --badge-bg: #ebf5ff;
+      --badge-text: #0068d6;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Geist', Arial, sans-serif;
+      background: radial-gradient(circle at top, rgba(10,114,239,.08), transparent 30%), var(--bg);
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+    .app { width: min(1240px, calc(100vw - 32px)); margin: 0 auto; padding: 20px 0 28px; }
+    .nav {
+      display:flex; justify-content:space-between; align-items:center; gap:16px; padding: 14px 0 18px; margin-bottom: 14px;
+      border-bottom: 1px solid var(--line-light);
+    }
+    .brand { display:flex; align-items:center; gap:10px; }
+    .triangle { width: 0; height: 0; border-left: 7px solid transparent; border-right: 7px solid transparent; border-bottom: 12px solid #171717; transform: rotate(90deg); }
+    .brand strong { font-size: 14px; font-weight: 600; }
+    .brand span { color: var(--subtle); font-size: 13px; }
+    .actions { display:flex; gap:10px; flex-wrap:wrap; }
+    .btn, .dark, .pill {
+      min-height: 38px; padding: 0 14px; border-radius: 10px; text-decoration:none; display:inline-flex; align-items:center; justify-content:center; font-size: 14px; font-weight: 500;
+    }
+    .btn { color: var(--text); background:#fff; box-shadow: rgba(0,0,0,.08) 0 0 0 1px, #fafafa 0 0 0 1px inset; }
+    .dark { color:#fff; background:#171717; }
+    .hero {
+      display:grid; grid-template-columns: 1.15fr .85fr; gap: 18px; margin-bottom: 18px;
+    }
+    .card {
+      background:#fff; border-radius: 22px;
+      box-shadow: rgba(0,0,0,.08) 0 0 0 1px, rgba(0,0,0,.04) 0 2px 2px, rgba(0,0,0,.04) 0 8px 8px -8px, #fafafa 0 0 0 1px inset;
+      padding: 22px;
+    }
+    .eyebrow { color: var(--subtle); font-size: 12px; }
+    h1 { margin: 12px 0 0; font-size: clamp(34px, 5vw, 50px); line-height: 1.02; letter-spacing: -2.4px; font-weight: 600; }
+    .lead { margin: 16px 0 0; color: var(--muted); font-size: 18px; line-height: 1.72; max-width: 54ch; }
+    .workflow { display:grid; gap: 12px; }
+    .step { border-radius: 16px; padding: 16px; box-shadow: rgba(0,0,0,.08) 0 0 0 1px; }
+    .step small { display:block; font-family:'Geist Mono', ui-monospace, monospace; font-size: 11px; color: var(--subtle); text-transform: uppercase; }
+    .step strong { display:block; margin-top: 8px; font-size: 19px; letter-spacing: -.6px; }
+    .step p { margin: 8px 0 0; color: var(--muted); line-height: 1.6; font-size: 14px; }
+    .step.dev strong { color: var(--blue); }
+    .step.preview strong { color: var(--pink); }
+    .step.ship strong { color: var(--red); }
+    .toolbar { display:grid; grid-template-columns: auto 1fr auto auto auto auto; gap: 10px; margin-bottom: 18px; }
+    .cluster, .input {
+      min-height: 40px; border-radius: 10px; background:#fff; box-shadow: rgba(0,0,0,.08) 0 0 0 1px, #fafafa 0 0 0 1px inset;
+      display:flex; align-items:center;
+    }
+    .cluster { padding: 0 8px; gap: 8px; }
+    .cluster span { min-width: 56px; min-height: 28px; border-radius: 999px; display:inline-flex; align-items:center; justify-content:center; font-size: 12px; }
+    .cluster .active { background: #171717; color: #fff; }
+    .input { padding: 0 14px; color: var(--subtle); }
+    .metrics { display:grid; grid-template-columns: repeat(4, 1fr); gap: 18px; margin-bottom: 18px; }
+    .metric strong { display:block; margin-top: 12px; font-size: 34px; letter-spacing: -1.2px; }
+    .metric p { margin: 10px 0 0; color: var(--muted); line-height: 1.6; }
+    .metric .badge { display:inline-flex; align-items:center; justify-content:center; min-height:24px; padding: 0 10px; border-radius:999px; background: var(--badge-bg); color: var(--badge-text); font-size:12px; font-weight:500; }
+    .table-head { display:flex; align-items:flex-end; justify-content:space-between; gap:16px; margin-bottom: 14px; }
+    .table-head h2 { margin: 8px 0 0; font-size: 28px; letter-spacing: -1px; }
+    .table-head p { margin: 8px 0 0; color: var(--muted); line-height: 1.65; }
+    table { width:100%; border-collapse: collapse; }
+    th, td { text-align:left; padding: 14px 12px; border-bottom: 1px solid var(--line-light); vertical-align: middle; }
+    th { color: var(--subtle); font-size: 12px; font-weight: 500; }
+    td { font-size: 14px; }
+    .name { display:grid; gap:4px; }
+    .name strong { font-weight: 600; }
+    .name small, .mono { color: var(--subtle); }
+    .mono { font-family:'Geist Mono', ui-monospace, monospace; font-size: 12px; }
+    .tag { display:inline-flex; align-items:center; justify-content:center; min-height:24px; padding: 0 10px; border-radius:999px; background:#ebf5ff; color:#0068d6; font-size:12px; font-weight:500; }
+    .progress { display:grid; gap: 8px; min-width: 120px; }
+    .track { height: 8px; border-radius: 999px; background:#f0f0f0; overflow:hidden; }
+    .bar { height:100%; border-radius: inherit; background: linear-gradient(90deg, var(--blue), var(--pink)); }
+    .row-actions { display:flex; gap: 12px; flex-wrap:wrap; }
+    .link { color:#0072f5; text-decoration:none; font-size:13px; }
+    .link.delete { color: var(--red); }
+    @media (max-width: 1020px) {
+      .hero, .metrics { grid-template-columns: 1fr 1fr; }
+      .toolbar { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="nav">
+      <div class="brand"><span class="triangle"></span><strong>Quota Console</strong><span>Vercel-inspired clean operations UI</span></div>
+      <div class="actions"><span class="btn">导出</span><span class="btn">刷新</span><span class="dark">新增记录</span></div>
+    </div>
+
+    <section class="hero">
+      <article class="card">
+        <div class="eyebrow">Operate / Monitor · storage quota management</div>
+        <h1>让存储配额后台看起来像现代产品控制台。</h1>
+        <p class="lead">如果你更想要白底、整洁、克制、精致，而不是典型的运维深色台，这套最稳。它会让“集群切换、搜索、编辑、同步”这些动作显得更产品化。</p>
+      </article>
+      <article class="card workflow">
+        <div class="step dev"><small>Develop</small><strong>切换集群上下文</strong><p>将 8581 / 9654 做成干净的切换器，而不是两个孤立按钮。</p></div>
+        <div class="step preview"><small>Preview</small><strong>先看容量结构</strong><p>把已用、配额、超限人数前置成概览指标，而不是埋在表格里。</p></div>
+        <div class="step ship"><small>Ship</small><strong>再做危险动作</strong><p>编辑、删除、同步配额都应有更清晰的主次关系与反馈。</p></div>
+      </article>
+    </section>
+
+    <section class="toolbar">
+      <div class="cluster card"><span class="active">8581</span><span>9654</span></div>
+      <div class="input">按姓名搜索，例如 liu</div>
+      <div class="btn">查询</div>
+      <div class="btn">重置</div>
+      <div class="btn">查询所有</div>
+      <div class="dark">同步变更</div>
+    </section>
+
+    <section class="metrics">
+      <article class="card metric"><span class="badge">Overview</span><strong>248</strong><p>当前集群中的用户记录总数。</p></article>
+      <article class="card metric"><span class="badge">Capacity</span><strong>612T</strong><p>当前已用容量。适合继续加趋势线或日增量。</p></article>
+      <article class="card metric"><span class="badge">Quota</span><strong>900T</strong><p>总配额池。后续可以挂接按课题组聚合。</p></article>
+      <article class="card metric"><span class="badge">Alert</span><strong>17</strong><p>使用率超过 80% 的高风险账号。</p></article>
+    </section>
+
+    <article class="card">
+      <div class="table-head">
+        <div>
+          <div class="eyebrow">Storage records</div>
+          <h2>配额记录</h2>
+          <p>这一版的重点是：少一点“说明区块”，多一点“数据产品”的节奏与控制感。</p>
+        </div>
+        <div class="actions"><span class="btn">批量选择</span><span class="dark">新建配额</span></div>
+      </div>
+      <table>
+        <thead>
+          <tr><th>ID</th><th>姓名</th><th>家目录</th><th>已用容量</th><th>配额上限</th><th>集群</th><th>使用率</th><th>操作</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>2031</td>
+            <td><div class="name"><strong>liuyang</strong><small>AI training workspace</small></div></td>
+            <td class="mono">/lustre/home/liuyang</td>
+            <td>12.6T</td>
+            <td>16T</td>
+            <td><span class="tag">8581</span></td>
+            <td><div class="progress"><span>79%</span><div class="track"><div class="bar" style="width:79%"></div></div></div></td>
+            <td><div class="row-actions"><a class="link" href="#">编辑</a><a class="link" href="#">同步配额</a></div></td>
+          </tr>
+          <tr>
+            <td>2028</td>
+            <td><div class="name"><strong>wangdi</strong><small>checkpoint cache</small></div></td>
+            <td class="mono">/lustre/project/wangdi</td>
+            <td>18.4T</td>
+            <td>20T</td>
+            <td><span class="tag">8581</span></td>
+            <td><div class="progress"><span>92%</span><div class="track"><div class="bar" style="width:92%"></div></div></div></td>
+            <td><div class="row-actions"><a class="link" href="#">编辑</a><a class="link delete" href="#">删除</a></div></td>
+          </tr>
+          <tr>
+            <td>1986</td>
+            <td><div class="name"><strong>chenrui</strong><small>shared output directory</small></div></td>
+            <td class="mono">/lustre/share/chenrui</td>
+            <td>4.1T</td>
+            <td>12T</td>
+            <td><span class="tag">8581</span></td>
+            <td><div class="progress"><span>34%</span><div class="track"><div class="bar" style="width:34%"></div></div></div></td>
+            <td><div class="row-actions"><a class="link" href="#">编辑</a><a class="link" href="#">历史</a></div></td>
+          </tr>
+          <tr>
+            <td>1979</td>
+            <td><div class="name"><strong>sunmo</strong><small>archive retention pool</small></div></td>
+            <td class="mono">/lustre/archive/sunmo</td>
+            <td>29.0T</td>
+            <td>32T</td>
+            <td><span class="tag">8581</span></td>
+            <td><div class="progress"><span>91%</span><div class="track"><div class="bar" style="width:91%"></div></div></div></td>
+            <td><div class="row-actions"><a class="link" href="#">编辑</a><a class="link delete" href="#">删除</a></div></td>
+          </tr>
+        </tbody>
+      </table>
+    </article>
+  </div>
+</body>
+</html>
