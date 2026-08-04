@@ -1,4 +1,3 @@
-
 from tortoise import Model, fields
 
 
@@ -6,7 +5,7 @@ from tortoise import Model, fields
 class Student(Model):
 
     # 主键 ID。
-    id = fields.IntField(pk=True,)   
+    id = fields.IntField(pk=True)
     # 已用容量。
     num = fields.CharField(max_length=255, null=True)
     # 用户名。
@@ -17,6 +16,10 @@ class Student(Model):
     iphone = fields.CharField(max_length=255, null=True)
     # 所属集群 ID。
     cluster_id = fields.CharField(max_length=255, null=True)
-    class Meta:
+    # 存储租用开始日期。
+    start_date = fields.DateField(null=True)
+    # 存储租用结束日期。
+    end_date = fields.DateField(null=True)
 
+    class Meta:
         table = "student"

@@ -1,0 +1,35 @@
+services:
+  testmysql:
+    image: swr.cn-north-4.myhuaweicloud.com/ddn-k8s/docker.io/mysql:8.0.43
+    container_name: vue3-demo-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: 1234
+      MYSQL_DATABASE: fastapi
+      MYSQL_INITDB_SKIP_TZINFO: "1"
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+    ports:
+      - "3306:3306"
+    volumes:
+      - vue3_demo_mysql_data:/var/lib/mysql
+      - ./demo/mysql/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -p1234 --silent"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  adminer:
+    image: adminer:4.8.1
+    container_name: vue3-demo-adminer
+    restart: unless-stopped
+    ports:
+      - "8088:8080"
+    depends_on:
+      testmysql:
+        condition: service_healthy
+
+volumes:
+  vue3_demo_mysql_data:
